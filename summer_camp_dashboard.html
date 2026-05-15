@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ananda Farm Summer Camp 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ─── Reset & base ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#FAF7F0;
+  --white:#FFFFFF;
+  --bark:#2C1A0E;
+  --bark-light:#5C3D2E;
+  --green-dark:#2D5A27;
+  --green-mid:#3A6B35;
+  --green-light:#E8F5E3;
+  --amber:#C8813A;
+  --amber-light:#FDF3E7;
+  --red-bg:#FFEBEE;
+  --red-text:#7B1D1D;
+  --yellow-bg:#FFF9E6;
+  --yellow-text:#6B4C00;
+  --border:#E2D8CC;
+  --shadow:0 2px 8px rgba(44,26,14,.08);
+  --radius:12px;
+}
+body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--bark);font-size:15px;line-height:1.5}
+h1,h2,h3{font-family:'Lora',serif}
+a{color:var(--green-dark)}
+
+/* ─── Layout ─── */
+.page-wrap{max-width:1320px;margin:0 auto;padding:20px 16px 60px}
+
+/* ─── Header ─── */
+.site-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid var(--green-light)}
+.site-header .logo-area h1{font-size:1.6rem;color:var(--green-dark);line-height:1.2}
+.site-header .logo-area .sub{font-family:'Inter',sans-serif;font-size:.8rem;color:var(--bark-light);margin-top:2px}
+.refresh-badge{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:.78rem;color:var(--bark-light);display:flex;align-items:center;gap:6px}
+.refresh-badge .dot{width:8px;height:8px;border-radius:50%;background:#52C041;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.live-indicator{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+
+/* ─── Alert banner ─── */
+.banner{border-radius:var(--radius);padding:12px 16px;margin-bottom:20px;font-size:.85rem;display:flex;align-items:center;gap:10px}
+.banner.info{background:var(--amber-light);border:1px solid #E8C89A}
+.banner.warning{background:var(--yellow-bg);border:1px solid #DDB96A;color:var(--yellow-text)}
+
+/* ─── Summary cards ─── */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:28px}
+.card{background:var(--white);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.card .card-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--bark-light);font-weight:600;margin-bottom:6px}
+.card .card-value{font-size:2rem;font-weight:700;color:var(--green-dark);line-height:1.1}
+.card .card-sub{font-size:.75rem;color:var(--bark-light);margin-top:4px}
+.card.at-risk{border-color:#E57373;background:#FFF5F5}
+.card.at-risk .card-value{color:#C62828}
+.card.countdown{border-color:var(--green-mid);background:var(--green-light)}
+.card.countdown .card-value{color:var(--green-dark)}
+
+/* ─── Section ─── */
+.section{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:24px;overflow:hidden}
+.section-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.section-header h2{font-size:1.05rem;color:var(--bark)}
+.section-body{padding:0}
+
+/* ─── Week heatmap ─── */
+.week-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.week-table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:800px}
+.week-table th{background:var(--cream);padding:10px 8px;text-align:center;font-weight:600;font-size:.75rem;color:var(--bark-light);border-bottom:2px solid var(--border);border-right:1px solid var(--border)}
+.week-table th.row-label{text-align:left;padding-left:16px;min-width:130px}
+.week-table td{padding:8px 6px;text-align:center;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+.week-table td.row-label{text-align:left;padding-left:16px;font-weight:500;color:var(--bark-light);font-size:.78rem;background:var(--cream)}
+.wk-green{background:var(--green-light);color:var(--green-dark)}
+.wk-yellow{background:var(--yellow-bg);color:var(--yellow-text)}
+.wk-red{background:var(--red-bg);color:var(--red-text)}
+.wk-count{font-size:1.3rem;font-weight:700;line-height:1}
+.wk-dates{font-size:.68rem;font-weight:400;opacity:.8;display:block;margin-top:2px}
+.wk-badge{display:inline-block;background:rgba(0,0,0,.06);border-radius:4px;padding:1px 6px;font-size:.75rem;margin:1px}
+.revenue-cell{font-weight:600;font-size:.82rem}
+
+/* ─── Filters ─── */
+.filters{display:flex;flex-wrap:wrap;gap:10px;padding:14px 16px;background:var(--cream);border-bottom:1px solid var(--border);align-items:center}
+.filter-group{display:flex;align-items:center;gap:6px}
+.filter-group label{font-size:.75rem;font-weight:600;color:var(--bark-light);text-transform:uppercase;letter-spacing:.04em}
+.filter-group select,.filter-group input{border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:.82rem;background:var(--white);color:var(--bark);font-family:inherit}
+.filter-group input{width:180px}
+.btn{border:none;border-radius:8px;padding:7px 16px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s}
+.btn-primary{background:var(--green-dark);color:#fff}
+.btn-primary:hover{opacity:.88}
+.btn-outline{background:var(--white);color:var(--green-dark);border:1.5px solid var(--green-dark)}
+.btn-outline:hover{background:var(--green-light)}
+.result-count{font-size:.78rem;color:var(--bark-light);margin-left:auto}
+
+/* ─── Roster table ─── */
+.roster-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.roster-table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:900px}
+.roster-table th{background:var(--cream);padding:9px 10px;text-align:left;font-weight:600;font-size:.73rem;color:var(--bark-light);border-bottom:2px solid var(--border);cursor:pointer;user-select:none;white-space:nowrap}
+.roster-table th:hover{color:var(--green-dark)}
+.roster-table th .sort-arrow{margin-left:3px;opacity:.4}
+.roster-table th.sorted .sort-arrow{opacity:1}
+.roster-table td{padding:8px 10px;border-bottom:1px solid #F0EBE4;vertical-align:middle}
+.roster-table tr:hover td{background:#FBF8F4}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:600;white-space:nowrap}
+.tag-green{background:var(--green-light);color:var(--green-dark)}
+.tag-amber{background:var(--amber-light);color:#8B5200}
+.tag-red{background:var(--red-bg);color:var(--red-text)}
+.tag-blue{background:#E3F2FD;color:#1565C0}
+.tag-gray{background:#F0EDE8;color:var(--bark-light)}
+.tag-yellow{background:var(--yellow-bg);color:var(--yellow-text)}
+.ec-yes{color:var(--green-dark);font-weight:600}
+.ec-no{color:var(--border)}
+.no-results{padding:40px;text-align:center;color:var(--bark-light)}
+
+/* ─── Data quality ─── */
+.dq-section{padding:4px 0}
+.dq-panel{border-bottom:1px solid var(--border)}
+.dq-panel:last-child{border-bottom:none}
+.dq-toggle{width:100%;background:none;border:none;padding:14px 20px;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-family:inherit;font-size:.88rem;color:var(--bark);font-weight:500}
+.dq-toggle:hover{background:var(--cream)}
+.dq-toggle .dq-badge{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border-radius:11px;font-size:.72rem;font-weight:700;padding:0 7px}
+.dq-toggle .dq-badge.zero{background:#E8F5E3;color:var(--green-dark)}
+.dq-toggle .dq-badge.warn{background:#FFF3CD;color:#856404}
+.dq-toggle .dq-badge.alert{background:var(--red-bg);color:var(--red-text)}
+.dq-toggle .chevron{font-size:.7rem;transition:transform .2s;color:var(--bark-light)}
+.dq-toggle.open .chevron{transform:rotate(180deg)}
+.dq-body{display:none;padding:0 20px 16px}
+.dq-body.open{display:block}
+.dq-item{background:var(--cream);border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:.82rem}
+.dq-item strong{color:var(--bark)}
+.dq-item .dq-meta{color:var(--bark-light);font-size:.75rem;margin-top:3px}
+
+/* ─── Trend chart ─── */
+.chart-wrap{padding:20px}
+.chart-canvas{width:100%;height:180px}
+
+/* ─── Footer ─── */
+.footer{text-align:center;font-size:.75rem;color:var(--bark-light);padding:24px 0 0;border-top:1px solid var(--border)}
+.footer a{color:var(--amber)}
+
+/* ─── Config banner ─── */
+.config-banner{background:#1E3A1C;color:#C8F0C0;border-radius:var(--radius);padding:14px 18px;margin-bottom:20px;font-size:.82rem;font-family:monospace;display:flex;align-items:flex-start;gap:10px}
+.config-banner .icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+
+/* ─── Responsive ─── */
+@media(max-width:640px){
+  .cards{grid-template-columns:repeat(2,1fr)}
+  .card .card-value{font-size:1.6rem}
+  .site-header .logo-area h1{font-size:1.3rem}
+}
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="logo-area">
+      <h1>🌿 Ananda Farm Summer Camp 2026</h1>
+      <div class="sub">Terra Ceia, FL &nbsp;·&nbsp; June 1 – August 7, 2026 &nbsp;·&nbsp; 9 Weeks</div>
+    </div>
+    <div class="refresh-badge">
+      <span class="dot" id="statusDot"></span>
+      <span class="live-indicator" id="dataSource">Static snapshot</span>
+      &nbsp;·&nbsp;
+      <span id="refreshLabel">Refreshed: —</span>
+    </div>
+  </header>
+
+  <!-- CONFIG BANNER (shown when no live endpoint set) -->
+  <div class="config-banner" id="configBanner">
+    <span class="icon">⚙️</span>
+    <span><strong style="color:#A8D8A0">LIVE DATA:</strong> To connect Power Automate, set <code style="color:#FFD580">DATA_ENDPOINT</code> at the top of this file.&nbsp;
+    Currently showing: <span id="snapshotDate"></span> snapshot (Backfilled from TicketSpice CSV — May 7 2026).</span>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="cards" id="summaryCards"></div>
+
+  <!-- WEEK HEATMAP -->
+  <div class="section">
+    <div class="section-header">
+      <h2>📅 Week-by-Week Snapshot</h2>
+      <span id="atRiskSummary" style="font-size:.8rem;color:var(--red-text);font-weight:500"></span>
+    </div>
+    <div class="section-body">
+      <div class="week-table-wrap"><table class="week-table" id="weekTable"></table></div>
+    </div>
+  </div>
+
+  <!-- CAMPER ROSTER -->
+  <div class="section">
+    <div class="section-header">
+      <h2>🏕️ Camper Roster</h2>
+      <button class="btn btn-outline" onclick="exportCSV()">⬇ Export CSV</button>
+    </div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Search</label>
+        <input type="text" id="searchInput" placeholder="Name or parent…" oninput="applyFilters()">
+      </div>
+      <div class="filter-group">
+        <label>Week</label>
+        <select id="filterWeek" onchange="applyFilters()">
+          <option value="">All weeks</option>
+          <option value="1">Wk 1 – June 1–5</option>
+          <option value="2">Wk 2 – June 8–12</option>
+          <option value="3">Wk 3 – June 15–19</option>
+          <option value="4">Wk 4 – June 22–26</option>
+          <option value="5">Wk 5 – July 6–10</option>
+          <option value="6">Wk 6 – July 13–17</option>
+          <option value="7">Wk 7 – July 20–24</option>
+          <option value="8">Wk 8 – July 27–31</option>
+          <option value="9">Wk 9 – Aug 3–7</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Day Type</label>
+        <select id="filterDayType" onchange="applyFilters()">
+          <option value="">All</option>
+          <option value="Full Day">Full Day</option>
+          <option value="Half Day">Half Day</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Age Group</label>
+        <select id="filterAge" onchange="applyFilters()">
+          <option value="">All ages</option>
+          <option value="5-7">Ages 5–7</option>
+          <option value="8-11">Ages 8–11</option>
+          <option value="12">Age 12</option>
+          <option value="unknown">Age unknown</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Status</label>
+        <select id="filterStatus" onchange="applyFilters()">
+          <option value="">All statuses</option>
+          <option value="completed">Completed</option>
+          <option value="pending offline payment">Pending offline</option>
+          <option value="pre-registered">Pre-registered</option>
+        </select>
+      </div>
+      <span class="result-count" id="resultCount"></span>
+      <button class="btn btn-outline" onclick="clearFilters()">Clear</button>
+    </div>
+    <div class="roster-wrap">
+      <table class="roster-table" id="rosterTable">
+        <thead>
+          <tr>
+            <th onclick="sortBy('normalizedName')" id="th-name">Camper <span class="sort-arrow">⬍</span></th>
+            <th onclick="sortBy('age')" id="th-age">Age <span class="sort-arrow">⬍</span></th>
+            <th onclick="sortBy('week')" id="th-week">Week <span class="sort-arrow">⬍</span></th>
+            <th onclick="sortBy('dayType')" id="th-dayType">Day Type <span class="sort-arrow">⬍</span></th>
+            <th>Ext. Care</th>
+            <th onclick="sortBy('parentFirst')" id="th-parentFirst">Parent <span class="sort-arrow">⬍</span></th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th onclick="sortBy('soldDate')" id="th-soldDate">Sold <span class="sort-arrow">⬍</span></th>
+            <th onclick="sortBy('status')" id="th-status">Status <span class="sort-arrow">⬍</span></th>
+          </tr>
+        </thead>
+        <tbody id="rosterBody"></tbody>
+      </table>
+      <div class="no-results" id="noResults" style="display:none">No campers match the current filters.</div>
+    </div>
+  </div>
+
+  <!-- DATA QUALITY -->
+  <div class="section">
+    <div class="section-header"><h2>🔍 Data Quality Flags</h2></div>
+    <div class="dq-section" id="dqSection"></div>
+  </div>
+
+  <!-- TREND CHART -->
+  <div class="section">
+    <div class="section-header"><h2>📈 Registration Trend</h2></div>
+    <div class="chart-wrap">
+      <canvas id="trendChart" class="chart-canvas"></canvas>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>Ananda Farm Summer Camp 2026 &nbsp;·&nbsp; Dashboard built by Ryan &nbsp;·&nbsp;
+    <a href="https://anandafarm.ticketspice.com/summer-camp-2026-ananda-farm" target="_blank">TicketSpice ↗</a>
+    &nbsp;·&nbsp; Questions? admin@anandafarm.com</p>
+    <p style="margin-top:6px;font-size:.7rem">Data refreshes automatically when the Power Automate endpoint is configured. Manual refresh: reload the page.</p>
+  </footer>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// CONFIGURATION — paste your Power Automate endpoint URL here
+// when ready. Leave empty to use the embedded snapshot data.
+// ═══════════════════════════════════════════════════════════════════
+const DATA_ENDPOINT = "";
+const CACHE_SECONDS = 60;
+
+// ─── Embedded snapshot data ───────────────────────────────────────
+const SNAPSHOT_DATA = {"generatedAt":"2026-05-15T00:00:00","dataNote":"Updated from TicketSpice CSV — May 15 2026","summary":{"uniqueCampers":106,"totalCampWeeks":156,"totalRevenue":37961.0,"paidRevenue":37661.0,"pendingRevenue":300.0,"weeksAtRisk":[3,5,6,7,8,9]},"weekStats":[{"week":1,"weekDates":"June 1–5","total":41,"fullDay":32,"halfDay":9,"extendedCare":1,"revenue":12050.0,"age5_7":27,"age8_11":10,"age12":1,"ageUnder5":1,"ageOver12":0,"ageUnknown":0},{"week":2,"weekDates":"June 8–12","total":21,"fullDay":16,"halfDay":5,"extendedCare":0,"revenue":6825.0,"age5_7":13,"age8_11":8,"age12":0,"ageUnder5":0,"ageOver12":0,"ageUnknown":0},{"week":3,"weekDates":"June 15–19","total":16,"fullDay":12,"halfDay":4,"extendedCare":2,"revenue":5875.0,"age5_7":10,"age8_11":6,"age12":0,"ageUnder5":0,"ageOver12":0,"ageUnknown":0},{"week":4,"weekDates":"June 22–26","total":23,"fullDay":20,"halfDay":3,"extendedCare":2,"revenue":7650.0,"age5_7":14,"age8_11":8,"age12":0,"ageUnder5":0,"ageOver12":0,"ageUnknown":0},{"week":5,"weekDates":"July 6–10","total":10,"fullDay":9,"halfDay":1,"extendedCare":0,"revenue":2650.0,"age5_7":4,"age8_11":3,"age12":0,"ageUnder5":0,"ageOver12":0,"ageUnknown":0},{"week":6,"weekDates":"July 13–17","total":13,"fullDay":10,"halfDay":3,"extendedCare":0,"revenue":3200.0,"age5_7":4,"age8_11":7,"age12":0,"ageUnder5":0,"ageOver12":0,"ageUnknown":0},{"week":7,"weekDates":"July 20–24","total":13,"fullDay":7,"halfDay":6,"extendedCare":0,"revenue":3075.0,"age5_7":6,"age8_11":6,"age12":0,"ageUnder5":1,"ageOver12":0,"ageUnknown":0},{"week":8,"weekDates":"July 27–31","total":8,"fullDay":2,"halfDay":6,"extendedCare":1,"revenue":1725.0,"age5_7":5,"age8_11":3,"age12":0,"ageUnder5":0,"ageOver12":0,"ageUnknown":0},{"week":9,"weekDates":"August 3–7","total":11,"fullDay":11,"halfDay":0,"extendedCare":1,"revenue":3050.0,"age5_7":5,"age8_11":6,"age12":0,"ageUnder5":0,"ageOver12":0,"ageUnknown":0}],"camperRows":[{"camperFirst":"Cameron","camperLast":"Muhr","normalizedName":"Cameron Muhr","dob":"2018-07-31","age":7,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Half Day","extendedCare":false,"parentFirst":"Kaylin","parentLast":"Muhr","parentEmail":"kaylin.hewitt@gmail.com","parentPhone":"(920) 637-0101","orderId":"72511186","orderNumber":"SMMRCMP2026NNHKA0001","ticketId":"01KJ5D92FM42NF7D7PG","ticketPrice":175.0,"status":"completed","soldDate":"2026-02-23 9:08 AM"},{"camperFirst":"Cade","camperLast":"Muhr","normalizedName":"Cade Muhr","dob":"2020-12-29","age":5,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Half Day","extendedCare":false,"parentFirst":"Kaylin","parentLast":"Muhr","parentEmail":"kaylin.hewitt@gmail.com","parentPhone":"(920) 637-0101","orderId":"72511186","orderNumber":"SMMRCMP2026NNHKA0001","ticketId":"01KJ5D92FQ15G56GPTJ","ticketPrice":175.0,"status":"completed","soldDate":"2026-02-23 9:08 AM"},{"camperFirst":"Cora Joy","camperLast":"Benjamsinon","normalizedName":"Cora Joy Benjamsinon","dob":"2018-03-01","age":8,"ageGroup":"8-11","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Laurie May","parentLast":"Andal","parentEmail":"mnmay@hotmail.com","parentPhone":"(954) 547-6967","orderId":"72511222","orderNumber":"SMMRCMP2026NNHKA0002","ticketId":"01KJ5DCKZK91W0CC4N6","ticketPrice":250.0,"status":"completed","soldDate":"2026-02-23 9:10 AM"},{"camperFirst":"Cora Joy","camperLast":"Benjaminson","normalizedName":"Cora Joy Benjaminson","dob":"2018-03-01","age":8,"ageGroup":"8-11","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":true,"parentFirst":"Laurie May","parentLast":"Andal","parentEmail":"mnmay@hotmail.com","parentPhone":"(954) 547-6967","orderId":"72511222","orderNumber":"SMMRCMP2026NNHKA0002","ticketId":"01KJ5DCKZEGBXNXHWRS","ticketPrice":300.0,"status":"completed","soldDate":"2026-02-23 9:10 AM"},{"camperFirst":"Noah","camperLast":"Benjaminson","normalizedName":"Noah Benjaminson","dob":"2019-11-07","age":6,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":true,"parentFirst":"Laurie May","parentLast":"Andal","parentEmail":"mnmay@hotmail.com","parentPhone":"(954) 547-6967","orderId":"72511222","orderNumber":"SMMRCMP2026NNHKA0002","ticketId":"01KJ5DCKZMNB1GR9ZG8","ticketPrice":300.0,"status":"completed","soldDate":"2026-02-23 9:10 AM"},{"camperFirst":"Noah","camperLast":"Benjaminson","normalizedName":"Noah Benjaminson","dob":"2019-11-07","age":6,"ageGroup":"5-7","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":true,"parentFirst":"Laurie May","parentLast":"Andal","parentEmail":"mnmay@hotmail.com","parentPhone":"(954) 547-6967","orderId":"72511222","orderNumber":"SMMRCMP2026NNHKA0002","ticketId":"01KJ5DCKZG7J5NFA6HR","ticketPrice":300.0,"status":"completed","soldDate":"2026-02-23 9:10 AM"},{"camperFirst":"Jack","camperLast":"Przybyla","normalizedName":"Jack Przybyla","dob":"2019-08-30","age":6,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Lauren","parentLast":"Przybyla","parentEmail":"laurenp@laurenplaw.com","parentPhone":"(941) 243-7942","orderId":"72511465","orderNumber":"SMMRCMP2026NNHKA0003","ticketId":"01KJ5E2QYM5X868NVMN","ticketPrice":225.0,"status":"completed","soldDate":"2026-02-23 9:22 AM"},{"camperFirst":"Joseph","camperLast":"Przybyla","normalizedName":"Joseph Przybyla","dob":"2021-11-22","age":4,"ageGroup":"under5","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Lauren","parentLast":"Przybyla","parentEmail":"laurenp@laurenplaw.com","parentPhone":"(941) 243-7942","orderId":"72511465","orderNumber":"SMMRCMP2026NNHKA0003","ticketId":"01KJ5E2QYN06NMAD0YG","ticketPrice":225.0,"status":"completed","soldDate":"2026-02-23 9:22 AM"},{"camperFirst":"Layla","camperLast":"Przybyla","normalizedName":"Layla Przybyla","dob":"2014-04-23","age":12,"ageGroup":"12","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Lauren","parentLast":"Przybyla","parentEmail":"laurenp@laurenplaw.com","parentPhone":"(941) 243-7942","orderId":"72511465","orderNumber":"SMMRCMP2026NNHKA0003","ticketId":"01KJ5E2QYJWQM5J1PE8","ticketPrice":225.0,"status":"completed","soldDate":"2026-02-23 9:22 AM"},{"camperFirst":"Memphis","camperLast":"Mong","normalizedName":"Memphis Mong","dob":"2017-08-15","age":8,"ageGroup":"8-11","week":6,"weekDates":"July 13–17","dayType":"Full Day","extendedCare":false,"parentFirst":"Danielle Bentley","parentLast":"Mong","parentEmail":"daniellebmong@gmail.com","parentPhone":"(941) 737-9326","orderId":"72517535","orderNumber":"SMMRCMP2026NNHKA0004","ticketId":"01KJ5SG9G5WASD83548","ticketPrice":275.0,"status":"completed","soldDate":"2026-02-23 12:42 PM"},{"camperFirst":"Memphis","camperLast":"Mong","normalizedName":"Memphis Mong","dob":"2017-08-15","age":8,"ageGroup":"8-11","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":false,"parentFirst":"Danielle Bentley","parentLast":"Mong","parentEmail":"daniellebmong@gmail.com","parentPhone":"(941) 737-9326","orderId":"72517535","orderNumber":"SMMRCMP2026NNHKA0004","ticketId":"01KJ5SG9G6QVBNW9F21","ticketPrice":275.0,"status":"completed","soldDate":"2026-02-23 12:42 PM"},{"camperFirst":"Memphis","camperLast":"Mong","normalizedName":"Memphis Mong","dob":"2017-08-15","age":8,"ageGroup":"8-11","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":false,"parentFirst":"Danielle Bentley","parentLast":"Mong","parentEmail":"daniellebmong@gmail.com","parentPhone":"(941) 737-9326","orderId":"72517535","orderNumber":"SMMRCMP2026NNHKA0004","ticketId":"01KJ5SG9G312EEYXCKX","ticketPrice":275.0,"status":"completed","soldDate":"2026-02-23 12:42 PM"},{"camperFirst":"Madison","camperLast":"Murphy","normalizedName":"Madison Murphy","dob":"2020-01-10","age":6,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Half Day","extendedCare":true,"parentFirst":"Jackelyn","parentLast":"Vario","parentEmail":"jbmurph44@gmail.com","parentPhone":"(586) 219-6723","orderId":"72533400","orderNumber":"SMMRCMP2026NNHKA0005","ticketId":"01KJ6PT7TB67EP3EFZ5","ticketPrice":225.0,"status":"completed","soldDate":"2026-02-23 9:14 PM"},{"camperFirst":"Mackenzie","camperLast":"Greineisen","normalizedName":"Mackenzie Greineisen","dob":"2018-09-03","age":7,"ageGroup":"5-7","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":false,"parentFirst":"Justin","parentLast":"Greineisen","parentEmail":"justin.matthew.g@gmail.com","parentPhone":"(941) 226-5539","orderId":"72710451","orderNumber":"SMMRCMP2026NNHKA0007","ticketId":"01KJJ4B4QG7K9RF1EPQ","ticketPrice":300.0,"status":"completed","soldDate":"2026-02-28 7:42 AM"},{"camperFirst":"Olivia","camperLast":"Farmer","normalizedName":"Olivia Farmer","dob":"2017-10-16","age":8,"ageGroup":"8-11","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Jeanette","parentLast":"Morris","parentEmail":"taralee941@gmail.com","parentPhone":"(941) 932-5547","orderId":"72784147","orderNumber":"SMMRCMP2026NNHKA0008","ticketId":"01KJNVG0HZ40YRTQAND","ticketPrice":225.0,"status":"completed","soldDate":"2026-03-01 6:24 PM"},{"camperFirst":"Marley","camperLast":"Farmer","normalizedName":"Marley Farmer","dob":"2020-02-06","age":6,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Jeanette","parentLast":"Morris","parentEmail":"taralee941@gmail.com","parentPhone":"(941) 932-5547","orderId":"72784147","orderNumber":"SMMRCMP2026NNHKA0008","ticketId":"01KJNVG0J49M911JZTX","ticketPrice":225.0,"status":"completed","soldDate":"2026-03-01 6:24 PM"},{"camperFirst":"Olivia","camperLast":"Farmer","normalizedName":"Olivia Farmer","dob":"2017-10-16","age":8,"ageGroup":"8-11","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":false,"parentFirst":"Jeanette","parentLast":"Morris","parentEmail":"taralee941@gmail.com","parentPhone":"(941) 932-5547","orderId":"72784147","orderNumber":"SMMRCMP2026NNHKA0008","ticketId":"01KJNVG0J5FDE5B5YVC","ticketPrice":225.0,"status":"completed","soldDate":"2026-03-01 6:24 PM"},{"camperFirst":"Marley","camperLast":"Farmer","normalizedName":"Marley Farmer","dob":"2020-02-06","age":6,"ageGroup":"5-7","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":false,"parentFirst":"Jeanette","parentLast":"Morris","parentEmail":"taralee941@gmail.com","parentPhone":"(941) 932-5547","orderId":"72784147","orderNumber":"SMMRCMP2026NNHKA0008","ticketId":"01KJNVG0J6ZW75ZG92C","ticketPrice":225.0,"status":"completed","soldDate":"2026-03-01 6:24 PM"},{"camperFirst":"Emerson","camperLast":"Charpentier","normalizedName":"Emerson Charpentier","dob":"2019-11-23","age":6,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Half Day","extendedCare":false,"parentFirst":"Kelly","parentLast":"Charpentier","parentEmail":"rodgerkl@gmail.com","parentPhone":"(727) 871-4862","orderId":"72795867","orderNumber":"SMMRCMP2026NNHKA0009","ticketId":"01KJQC40K5HHYJCRD9R","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-02 8:34 AM"},{"camperFirst":"Saylor","camperLast":"White","normalizedName":"Saylor White","dob":"2017-10-12","age":8,"ageGroup":"8-11","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Oce","parentLast":"White","parentEmail":"owhitern@gmail.com","parentPhone":"(727) 667-8473","orderId":"72796227","orderNumber":"SMMRCMP2026NNHKA000C","ticketId":"01KJQD64ANTKYMPWGVG","ticketPrice":225.0,"status":"completed","soldDate":"2026-03-02 8:53 AM"},{"camperFirst":"Emerson","camperLast":"White","normalizedName":"Emerson White","dob":"2015-09-29","age":10,"ageGroup":"8-11","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Oce","parentLast":"White","parentEmail":"owhitern@gmail.com","parentPhone":"(727) 667-8473","orderId":"72796227","orderNumber":"SMMRCMP2026NNHKA000C","ticketId":"01KJQD649DV0JSPY1HK","ticketPrice":225.0,"status":"completed","soldDate":"2026-03-02 8:53 AM"},{"camperFirst":"Reagan","camperLast":"Johnson","normalizedName":"Reagan Johnson","dob":"2018-05-30","age":8,"ageGroup":"8-11","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Erica","parentLast":"Johnson","parentEmail":"ericajohnson0322@gmail.com","parentPhone":"(612) 325-2452","orderId":"72796252","orderNumber":"SMMRCMP2026NNHKA000D","ticketId":"01KJQD8KA6ZEQ4WYTN5","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-02 8:54 AM"},{"camperFirst":"Charley","camperLast":"Johnson","normalizedName":"Charley Johnson","dob":"2021-05-10","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Erica","parentLast":"Johnson","parentEmail":"ericajohnson0322@gmail.com","parentPhone":"(612) 325-2452","orderId":"72796252","orderNumber":"SMMRCMP2026NNHKA000D","ticketId":"01KJQD8KA8EWY8W4KKR","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-02 8:54 AM"},{"camperFirst":"Reagan","camperLast":"Johnson","normalizedName":"Reagan Johnson","dob":"2018-05-30","age":8,"ageGroup":"8-11","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":false,"parentFirst":"Erica","parentLast":"Johnson","parentEmail":"ericajohnson0322@gmail.com","parentPhone":"(612) 325-2452","orderId":"72796252","orderNumber":"SMMRCMP2026NNHKA000D","ticketId":"01KJQD8KA9EBAM55MSK","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-02 8:54 AM"},{"camperFirst":"Charley","camperLast":"Johnson","normalizedName":"Charley Johnson","dob":"2021-05-10","age":5,"ageGroup":"5-7","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":false,"parentFirst":"Erica","parentLast":"Johnson","parentEmail":"ericajohnson0322@gmail.com","parentPhone":"(612) 325-2452","orderId":"72796252","orderNumber":"SMMRCMP2026NNHKA000D","ticketId":"01KJQD8KAATFBMHJ59E","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-02 8:54 AM"},{"camperFirst":"Aria","camperLast":"Turchin","normalizedName":"Aria Turchin","dob":"2021-03-25","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Daniella","parentLast":"Turchin","parentEmail":"daniellaturchin@gmail.com","parentPhone":"(954) 328-1410","orderId":"72796633","orderNumber":"SMMRCMP2026NNHKA000F","ticketId":"01KJQDMY8WZB7874YWF","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-02 9:01 AM"},{"camperFirst":"Copeland","camperLast":"Carter","normalizedName":"Copeland Carter","dob":"2021-01-12","age":5,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Allison","parentLast":"Geiger","parentEmail":"aligeiger6@aol.com","parentPhone":"(941) 720-1385","orderId":"72798767","orderNumber":"SMMRCMP2026NNHKA000G","ticketId":"01KJQG3APWTC4PQ20KZ","ticketPrice":275.0,"status":"completed","soldDate":"2026-03-02 9:44 AM"},{"camperFirst":"Copeland","camperLast":"Carter","normalizedName":"Copeland Carter","dob":"2021-01-12","age":5,"ageGroup":"5-7","week":6,"weekDates":"July 13–17","dayType":"Full Day","extendedCare":false,"parentFirst":"Allison","parentLast":"Geiger","parentEmail":"aligeiger6@aol.com","parentPhone":"(941) 720-1385","orderId":"72798767","orderNumber":"SMMRCMP2026NNHKA000G","ticketId":"01KJQG3APY2K3025NGY","ticketPrice":275.0,"status":"completed","soldDate":"2026-03-02 9:44 AM"},{"camperFirst":"Everly","camperLast":"Clarke","normalizedName":"Everly Clarke","dob":"2017-12-04","age":8,"ageGroup":"8-11","week":7,"weekDates":"July 20–24","dayType":"Full Day","extendedCare":false,"parentFirst":"Rebecca","parentLast":"Ries","parentEmail":"bries04@gmail.com","parentPhone":"(727) 510-1110","orderId":"72800376","orderNumber":"SMMRCMP2026NNHKA000H","ticketId":"01KJQJJ1G462KWF73P0","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-02 10:27 AM"},{"camperFirst":"Wyatt","camperLast":"Clarke","normalizedName":"Wyatt Clarke","dob":"2017-12-04","age":8,"ageGroup":"8-11","week":7,"weekDates":"July 20–24","dayType":"Full Day","extendedCare":false,"parentFirst":"Rebecca","parentLast":"Ries","parentEmail":"bries04@gmail.com","parentPhone":"(727) 510-1110","orderId":"72800376","orderNumber":"SMMRCMP2026NNHKA000H","ticketId":"01KJQJJ1G2YX0ACFKJ5","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-02 10:27 AM"},{"camperFirst":"Oaklynn","camperLast":"Arick","normalizedName":"Oaklynn Arick","dob":"2019-12-19","age":6,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Christina","parentLast":"Arick","parentEmail":"christina.arick2@gmail.com","parentPhone":"(352) 459-3750","orderId":"72911294","orderNumber":"SMMRCMP2026NNHKA000J","ticketId":"01KK6YTYJTR5NCJ63S9","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-08 10:50 AM"},{"camperFirst":"Easton","camperLast":"Smith","normalizedName":"Easton Smith","dob":"2020-09-02","age":5,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Tiffany","parentLast":"Smith","parentEmail":"tiffany@uws.solutions","parentPhone":"(941) 524-2065","orderId":"73030376","orderNumber":"SMMRCMP2026NNHKA000N","ticketId":"01KK76HQQ9F5VDBZWYP","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-08 1:05 PM"},{"camperFirst":"Beckett","camperLast":"Messner","normalizedName":"Beckett Messner","dob":"2019-09-09","age":6,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Stacey","parentLast":"Vanhoucke","parentEmail":"staceyjoco@yahoo.com","parentPhone":"(734) 679-3130","orderId":"73087406","orderNumber":"SMMRCMP2026NNHKA000P","ticketId":"01KKC4CV1BZQ4004XRX","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-10 11:03 AM"},{"camperFirst":"Hannah","camperLast":"Mcguire","normalizedName":"Hannah Mcguire","dob":"2020-05-10","age":6,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Alicia","parentLast":"Mcguire","parentEmail":"tamcguire18@gmail.com","parentPhone":"(941) 812-4240","orderId":"73087471","orderNumber":"SMMRCMP2026NNHKA000Q","ticketId":"01KKC4HTNYA3XBKHC5J","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-10 11:06 AM"},{"camperFirst":"Olivia","camperLast":"Smith","normalizedName":"Olivia Smith","dob":"2019-03-03","age":7,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Laura","parentLast":"Williamson","parentEmail":"laura_freel@hotmail.com","parentPhone":"(813) 416-1115","orderId":"73090341","orderNumber":"SMMRCMP2026NNHKA000R","ticketId":"01KKC8YYFN0BW3GKPVN","ticketPrice":225.0,"status":"completed","soldDate":"2026-03-10 12:23 PM"},{"camperFirst":"Teagan","camperLast":"Williamson","normalizedName":"Teagan Williamson","dob":"2020-02-29","age":6,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Laura","parentLast":"Williamson","parentEmail":"laura_freel@hotmail.com","parentPhone":"(813) 416-1115","orderId":"73090341","orderNumber":"SMMRCMP2026NNHKA000R","ticketId":"01KKC8YYFJFHEW9D1JA","ticketPrice":225.0,"status":"completed","soldDate":"2026-03-10 12:23 PM"},{"camperFirst":"Dean","camperLast":"Aguinaga","normalizedName":"Dean Aguinaga","dob":"2021-02-24","age":5,"ageGroup":"5-7","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":false,"parentFirst":"Samantha","parentLast":"Aguinaga","parentEmail":"slbell1223@gmail.com","parentPhone":"(941) 915-4355","orderId":"73128408","orderNumber":"SMMRCMP2026NNHKA000S","ticketId":"01KKF0QSAGCFJVCE384","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-11 1:57 PM"},{"camperFirst":"Clarke","camperLast":"Aguinaga","normalizedName":"Clarke Aguinaga","dob":"2017-11-15","age":8,"ageGroup":"8-11","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":false,"parentFirst":"Samantha","parentLast":"Aguinaga","parentEmail":"slbell1223@gmail.com","parentPhone":"(941) 915-4355","orderId":"73128408","orderNumber":"SMMRCMP2026NNHKA000S","ticketId":"01KKF0QSAEF7MTVJ0Y4","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-11 1:57 PM"},{"camperFirst":"Emma","camperLast":"Marando","normalizedName":"Emma Marando","dob":"2020-09-02","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Heidi","parentLast":"Marando","parentEmail":"hmsantelmann@gmail.com","parentPhone":"(330) 321-5883","orderId":"73143025","orderNumber":"SMMRCMP2026NNHKA000T","ticketId":"01KKFQQR63DTZH7T9VJ","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-11 8:39 PM"},{"camperFirst":"Christopher","camperLast":"Wolf","normalizedName":"Christopher Wolf","dob":"2018-05-04","age":8,"ageGroup":"8-11","week":6,"weekDates":"July 13–17","dayType":"Full Day","extendedCare":false,"parentFirst":"Jennifer","parentLast":"Wolf","parentEmail":"jenn4wolf@gmail.com","parentPhone":"(816) 217-8399","orderId":"73162657","orderNumber":"SMMRCMP2026NNHKA000V","ticketId":"01KKHGCX840XA0SENF5","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-12 1:09 PM"},{"camperFirst":"Harper","camperLast":"Lane","normalizedName":"Harper Lane","dob":"2016-09-11","age":9,"ageGroup":"8-11","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Nicole","parentLast":"Lane","parentEmail":"swinehartnicole@icloud.com","parentPhone":"(570) 617-5915","orderId":"73194268","orderNumber":"SMMRCMP2026NNHKA000W","ticketId":"01KKKQMA5DN6Z9M9Z1Z","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-13 9:54 AM"},{"camperFirst":"Silas","camperLast":"Lane","normalizedName":"Silas Lane","dob":"2020-08-17","age":5,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Nicole","parentLast":"Lane","parentEmail":"swinehartnicole@icloud.com","parentPhone":"(570) 617-5915","orderId":"73194268","orderNumber":"SMMRCMP2026NNHKA000W","ticketId":"01KKKQMA5F6MWBBWFFB","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-13 9:54 AM"},{"camperFirst":"Connor","camperLast":"Attinella","normalizedName":"Connor Attinella","dob":"2020-04-02","age":6,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Kendall","parentLast":"Curtiss-Attinella","parentEmail":"kendall.curtiss@gmail.com","parentPhone":"(813) 841-6773","orderId":"73264004","orderNumber":"SMMRCMP2026NNHKA000X","ticketId":"01KKPXRWKY19YZGWZDH","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-14 3:39 PM"},{"camperFirst":"Remy","camperLast":"Attinella","normalizedName":"Remy Attinella","dob":"2016-10-13","age":9,"ageGroup":"8-11","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Kendall","parentLast":"Curtiss-Attinella","parentEmail":"kendall.curtiss@gmail.com","parentPhone":"(813) 841-6773","orderId":"73264004","orderNumber":"SMMRCMP2026NNHKA000X","ticketId":"01KKPXRWKWY9C79KQ3G","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-14 3:39 PM"},{"camperFirst":"Weston","camperLast":"Vester","normalizedName":"Weston Vester","dob":"2020-10-06","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Leslie","parentLast":"Duprey","parentEmail":"duprey.leslie@gmail.com","parentPhone":"(916) 548-0808","orderId":"73292861","orderNumber":"SMMRCMP2026NNHKA000Y","ticketId":"01KKS52K0PSTYMXBDEH","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-15 12:25 PM"},{"camperFirst":"Maria","camperLast":"Mathews","normalizedName":"Maria Mathews","dob":"2020-04-03","age":6,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Maria","parentLast":"Mathews","parentEmail":"mmathews214@gmail.com","parentPhone":"(941) 932-0179","orderId":"73358459","orderNumber":"SMMRCMP2026NNHKA000Z","ticketId":"01KKY3DK7PJ3BV58SFA","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-17 10:32 AM"},{"camperFirst":"Maria","camperLast":"Mathews","normalizedName":"Maria Mathews","dob":"2020-04-03","age":6,"ageGroup":"5-7","week":7,"weekDates":"July 20–24","dayType":"Full Day","extendedCare":false,"parentFirst":"Maria","parentLast":"Mathews","parentEmail":"mmathews214@gmail.com","parentPhone":"(941) 932-0179","orderId":"73358459","orderNumber":"SMMRCMP2026NNHKA000Z","ticketId":"01KKY3DK7VGDWJEAJWF","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-17 10:32 AM"},{"camperFirst":"Maria","camperLast":"Mathews","normalizedName":"Maria Mathews","dob":"2020-04-03","age":6,"ageGroup":"5-7","week":5,"weekDates":"July 6–10","dayType":"Full Day","extendedCare":false,"parentFirst":"Maria","parentLast":"Mathews","parentEmail":"mmathews214@gmail.com","parentPhone":"(941) 932-0179","orderId":"73358459","orderNumber":"SMMRCMP2026NNHKA000Z","ticketId":"01KKY3DK7SVDM0HSQ6C","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-17 10:32 AM"},{"camperFirst":"Brilynn (Brie)","camperLast":"Blankenfeld","normalizedName":"Brilynn (Brie) Blankenfeld","dob":"2021-07-14","age":4,"ageGroup":"under5","week":7,"weekDates":"July 20–24","dayType":"Full Day","extendedCare":false,"parentFirst":"Katie","parentLast":"Blankenfeld","parentEmail":"katieblankenfeld@gmail.com","parentPhone":"(610) 763-6190","orderId":"73400120","orderNumber":"SMMRCMP2026NNHKA0010","ticketId":"01KM0WWTC0H6SRZEA96","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-18 12:36 PM"},{"camperFirst":"Kensley","camperLast":"Westphal","normalizedName":"Kensley Westphal","dob":"2021-04-08","age":5,"ageGroup":"5-7","week":7,"weekDates":"July 20–24","dayType":"Full Day","extendedCare":false,"parentFirst":"Kaley","parentLast":"Westphal","parentEmail":"kaleykohl@gmail.com","parentPhone":"(920) 203-1838","orderId":"73400527","orderNumber":"SMMRCMP2026NNHKA0011","ticketId":"01KM0X97TVNAXKDRTV7","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-18 12:43 PM"},{"camperFirst":"Alexander","camperLast":"Dubinski","normalizedName":"Alexander Dubinski","dob":"2021-05-14","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Half Day","extendedCare":false,"parentFirst":"Alexander","parentLast":"Dubinski","parentEmail":"addubinski@gmail.com","parentPhone":"(941) 504-6500","orderId":"73416793","orderNumber":"SMMRCMP2026NNHKA0012","ticketId":"01KM1KP5CZBGG89XHY4","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-18 7:14 PM"},{"camperFirst":"Alexander","camperLast":"Dubinski","normalizedName":"Alexander Dubinski","dob":"2021-05-14","age":5,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Half Day","extendedCare":false,"parentFirst":"Alexander","parentLast":"Dubinski","parentEmail":"addubinski@gmail.com","parentPhone":"(941) 504-6500","orderId":"73416793","orderNumber":"SMMRCMP2026NNHKA0012","ticketId":"01KM1KP5CZBGG89XHY4","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-18 7:14 PM"},{"camperFirst":"Alexander","camperLast":"Dubinski","normalizedName":"Alexander Dubinski","dob":"2021-05-14","age":5,"ageGroup":"5-7","week":3,"weekDates":"June 15–19","dayType":"Half Day","extendedCare":false,"parentFirst":"Alexander","parentLast":"Dubinski","parentEmail":"addubinski@gmail.com","parentPhone":"(941) 504-6500","orderId":"73416793","orderNumber":"SMMRCMP2026NNHKA0012","ticketId":"01KM1KP5CZBGG89XHY4","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-18 7:14 PM"},{"camperFirst":"Alexander","camperLast":"Dubinski","normalizedName":"Alexander Dubinski","dob":"2021-05-14","age":5,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Half Day","extendedCare":false,"parentFirst":"Alexander","parentLast":"Dubinski","parentEmail":"addubinski@gmail.com","parentPhone":"(941) 504-6500","orderId":"73416793","orderNumber":"SMMRCMP2026NNHKA0012","ticketId":"01KM1KP5CZBGG89XHY4","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-18 7:14 PM"},{"camperFirst":"Owen","camperLast":"Beary","normalizedName":"Owen Beary","dob":"2020-11-13","age":5,"ageGroup":"5-7","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":true,"parentFirst":"Alexandra","parentLast":"Beary","parentEmail":"alexrossbeary@gmail.com","parentPhone":"(813) 957-8856","orderId":"73475302","orderNumber":"SMMRCMP2026NNHKA0013","ticketId":"01KM5NEZ1HWYK1ZQ93N","ticketPrice":350.0,"status":"completed","soldDate":"2026-03-20 9:02 AM"},{"camperFirst":"Ava","camperLast":"Patel","normalizedName":"Ava Patel","dob":"2020-10-02","age":5,"ageGroup":"5-7","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":false,"parentFirst":"Monika","parentLast":"Aneja","parentEmail":"monika.aneja1@gmail.com","parentPhone":"(386) 679-4229","orderId":"73475475","orderNumber":"SMMRCMP2026NNHKA0014","ticketId":"01KM5NSDVFF0ZQQDY8H","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-20 9:08 AM"},{"camperFirst":"Sawyer","camperLast":"Cook","normalizedName":"Sawyer Cook","dob":"2021-02-19","age":5,"ageGroup":"5-7","week":7,"weekDates":"July 20–24","dayType":"Half Day","extendedCare":false,"parentFirst":"Alyssa","parentLast":"Hiler","parentEmail":"alyssahiler@gmail.com","parentPhone":"(303) 621-5522","orderId":"73499703","orderNumber":"SMMRCMP2026NNHKA0015","ticketId":"01KM6G6MNBC1NJGJWEW","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-20 4:50 PM"},{"camperFirst":"Sawyer","camperLast":"Cook","normalizedName":"Sawyer Cook","dob":"2021-02-19","age":5,"ageGroup":"5-7","week":3,"weekDates":"June 15–19","dayType":"Half Day","extendedCare":false,"parentFirst":"Alyssa","parentLast":"Hiler","parentEmail":"alyssahiler@gmail.com","parentPhone":"(303) 621-5522","orderId":"73499703","orderNumber":"SMMRCMP2026NNHKA0015","ticketId":"01KM6G6MNAY3YY6332Z","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-20 4:50 PM"},{"camperFirst":"Sawyer","camperLast":"Cook","normalizedName":"Sawyer Cook","dob":"2021-02-19","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Half Day","extendedCare":false,"parentFirst":"Alyssa","parentLast":"Hiler","parentEmail":"alyssahiler@gmail.com","parentPhone":"(303) 621-5522","orderId":"73499703","orderNumber":"SMMRCMP2026NNHKA0015","ticketId":"01KM6G6MN8YAX37CVWG","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-20 4:50 PM"},{"camperFirst":"Harlow","camperLast":"Velez Cuevas","normalizedName":"Harlow Velez Cuevas","dob":"2019-01-13","age":7,"ageGroup":"5-7","week":6,"weekDates":"July 13–17","dayType":"Full Day","extendedCare":false,"parentFirst":"Kelly","parentLast":"Velez Cuevas","parentEmail":"kellyvelezcuevas@gmail.com","parentPhone":"(813) 892-9979","orderId":"73546112","orderNumber":"SMMRCMP2026NNHKA0016","ticketId":"01KM8TYSGH6DQEH23NR","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-21 2:36 PM"},{"camperFirst":"Blaze","camperLast":"Velez Cuevas","normalizedName":"Blaze Velez Cuevas","dob":"2016-06-30","age":9,"ageGroup":"8-11","week":6,"weekDates":"July 13–17","dayType":"Full Day","extendedCare":false,"parentFirst":"Kelly","parentLast":"Velez Cuevas","parentEmail":"kellyvelezcuevas@gmail.com","parentPhone":"(813) 892-9979","orderId":"73546112","orderNumber":"SMMRCMP2026NNHKA0016","ticketId":"01KM8TYSGFMK3Y84X0F","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-21 2:36 PM"},{"camperFirst":"Mila","camperLast":"Weiffenbach","normalizedName":"Mila Weiffenbach","dob":"2019-01-11","age":7,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Tara","parentLast":"Weiffenbach","parentEmail":"tweiff@yahoo.com","parentPhone":"(910) 546-3590","orderId":"73599712","orderNumber":"SMMRCMP2026NNHKA0017","ticketId":"01KMC6SVK9V4C139DZV","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-22 10:01 PM"},{"camperFirst":"Emma","camperLast":"Weiffenbach","normalizedName":"Emma Weiffenbach","dob":"2016-12-14","age":9,"ageGroup":"8-11","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Tara","parentLast":"Weiffenbach","parentEmail":"tweiff@yahoo.com","parentPhone":"(910) 546-3590","orderId":"73599712","orderNumber":"SMMRCMP2026NNHKA0017","ticketId":"01KMC6SVK7GP03CJN40","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-22 10:01 PM"},{"camperFirst":"Rachel","camperLast":"Turnier","normalizedName":"Rachel Turnier","dob":"2017-02-16","age":9,"ageGroup":"8-11","week":6,"weekDates":"July 13–17","dayType":"Half Day","extendedCare":false,"parentFirst":"Rachel","parentLast":"Turnier","parentEmail":"rachelturnier@gmail.com","parentPhone":"(941) 565-1159","orderId":"73633724","orderNumber":"SMMRCMP2026NNHKA0018","ticketId":"01KMEQYQ8EEMWDCX4RC","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-23 9:39 PM"},{"camperFirst":"Lilah","camperLast":"Paterniti-Dean","normalizedName":"Lilah Paterniti-Dean","dob":"2016-12-24","age":9,"ageGroup":"8-11","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Sophia","parentLast":"Paterniti","parentEmail":"xosophia96@gmail.com","parentPhone":"(941) 390-9109","orderId":"73653197","orderNumber":"SMMRCMP2026NNHKA0019","ticketId":"01KMGGPGHRPEFNHNEM1","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-24 2:11 PM"},{"camperFirst":"Blake","camperLast":"Walker","normalizedName":"Blake Walker","dob":"2018-03-29","age":8,"ageGroup":"8-11","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Ashley","parentLast":"Walker","parentEmail":"ashley.walker31688@gmail.com","parentPhone":"(941) 545-8855","orderId":"73686575","orderNumber":"SMMRCMP2026NNHKA001B","ticketId":"01KMJTMP0N6M5RFJX23","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-25 11:43 AM"},{"camperFirst":"Weston","camperLast":"Walker","normalizedName":"Weston Walker","dob":"2021-02-04","age":5,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Ashley","parentLast":"Walker","parentEmail":"ashley.walker31688@gmail.com","parentPhone":"(941) 545-8855","orderId":"73686575","orderNumber":"SMMRCMP2026NNHKA001B","ticketId":"01KMJTMP0QG446HEWYQ","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-25 11:43 AM"},{"camperFirst":"Blake","camperLast":"Walker","normalizedName":"Blake Walker","dob":"2018-03-29","age":8,"ageGroup":"8-11","week":6,"weekDates":"July 13–17","dayType":"Full Day","extendedCare":false,"parentFirst":"Ashley","parentLast":"Walker","parentEmail":"ashley.walker31688@gmail.com","parentPhone":"(941) 545-8855","orderId":"73686575","orderNumber":"SMMRCMP2026NNHKA001B","ticketId":"01KMJTMP0SXJA5P2JE8","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-25 11:43 AM"},{"camperFirst":"Weston","camperLast":"Walker","normalizedName":"Weston Walker","dob":"2021-02-04","age":5,"ageGroup":"5-7","week":6,"weekDates":"July 13–17","dayType":"Full Day","extendedCare":false,"parentFirst":"Ashley","parentLast":"Walker","parentEmail":"ashley.walker31688@gmail.com","parentPhone":"(941) 545-8855","orderId":"73686575","orderNumber":"SMMRCMP2026NNHKA001B","ticketId":"01KMJTMP0TESJA8PQS0","ticketPrice":250.0,"status":"completed","soldDate":"2026-03-25 11:43 AM"},{"camperFirst":"Annabelle","camperLast":"Biggar","normalizedName":"Annabelle Biggar","dob":"2016-06-22","age":9,"ageGroup":"8-11","week":1,"weekDates":"June 1–5","dayType":"Half Day","extendedCare":false,"parentFirst":"Adrienne","parentLast":"Biggar","parentEmail":"wats0189@gmail.com","parentPhone":"(612) 309-8582","orderId":"73708643","orderNumber":"SMMRCMP2026NNHKA001C","ticketId":"01KMKJ0WXZ1RD4GV8VH","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-25 6:32 PM"},{"camperFirst":"Ava","camperLast":"Mujakovic","normalizedName":"Ava Mujakovic","dob":"2016-08-24","age":9,"ageGroup":"8-11","week":1,"weekDates":"June 1–5","dayType":"Half Day","extendedCare":false,"parentFirst":"Elma","parentLast":"Mujakovic","parentEmail":"edzubur@gmail.com","parentPhone":"(607) 725-8466","orderId":"73711299","orderNumber":"SMMRCMP2026NNHKA001D","ticketId":"01KMKNSAC9MNTXZR8HX","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-25 7:37 PM"},{"camperFirst":"Kali","camperLast":"Hill","normalizedName":"Kali Hill","dob":"2018-11-12","age":7,"ageGroup":"5-7","week":8,"weekDates":"July 27–31","dayType":"Half Day","extendedCare":false,"parentFirst":"Beverly","parentLast":"Hill","parentEmail":"klboss2@yahoo.com","parentPhone":"(419) 750-0686","orderId":"73784211","orderNumber":"SMMRCMP2026NNHKA001F","ticketId":"01KMRAF8G3Z16TPFTR7","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-27 2:56 PM"},{"camperFirst":"Maya","camperLast":"Hanna","normalizedName":"Maya Hanna","dob":"2020-04-21","age":6,"ageGroup":"5-7","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":false,"parentFirst":"Gabby","parentLast":"Hanna","parentEmail":"gabduncan@gmail.com","parentPhone":"(727) 479-3744","orderId":"73872202","orderNumber":"SMMRCMP2026NNHKA001G","ticketId":"01KMWW274SJ03JBTYFZ","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-29 9:20 AM"},{"camperFirst":"Presley","camperLast":"Eberle Coughlin","normalizedName":"Presley Eberle Coughlin","dob":"2020-08-06","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Half Day","extendedCare":false,"parentFirst":"Maximilian","parentLast":"Eberle","parentEmail":"ryancoughlin0320@gmail.com","parentPhone":"(516) 712-9311","orderId":"73888517","orderNumber":"SMMRCMP2026NNHKA001H","ticketId":"01KMXBC47TBMVEVEBWR","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-29 1:48 PM"},{"camperFirst":"Jojo","camperLast":"Hamill","normalizedName":"Jojo Hamill","dob":"2018-04-26","age":8,"ageGroup":"8-11","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Melanie","parentLast":"Kim","parentEmail":"kim.melanie@gmail.com","parentPhone":"(763) 443-4668","orderId":"73912341","orderNumber":"SMMRCMP2026NNHKA001J","ticketId":"01KMZG8TD2RKR1NXC94","ticketPrice":275.0,"status":"completed","soldDate":"2026-03-30 9:52 AM"},{"camperFirst":"Jojo","camperLast":"Hamill","normalizedName":"Jojo Hamill","dob":"2018-04-26","age":8,"ageGroup":"8-11","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Melanie","parentLast":"Kim","parentEmail":"kim.melanie@gmail.com","parentPhone":"(763) 443-4668","orderId":"73912341","orderNumber":"SMMRCMP2026NNHKA001J","ticketId":"01KMZG8TD2RKR1NXC94","ticketPrice":275.0,"status":"completed","soldDate":"2026-03-30 9:52 AM"},{"camperFirst":"Jojo","camperLast":"Hamill","normalizedName":"Jojo Hamill","dob":"2018-04-26","age":8,"ageGroup":"8-11","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":false,"parentFirst":"Melanie","parentLast":"Kim","parentEmail":"kim.melanie@gmail.com","parentPhone":"(763) 443-4668","orderId":"73912341","orderNumber":"SMMRCMP2026NNHKA001J","ticketId":"01KMZG8TD2RKR1NXC94","ticketPrice":275.0,"status":"completed","soldDate":"2026-03-30 9:52 AM"},{"camperFirst":"Jojo","camperLast":"Hamill","normalizedName":"Jojo Hamill","dob":"2018-04-26","age":8,"ageGroup":"8-11","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Melanie","parentLast":"Kim","parentEmail":"kim.melanie@gmail.com","parentPhone":"(763) 443-4668","orderId":"73912341","orderNumber":"SMMRCMP2026NNHKA001J","ticketId":"01KMZG8TD2RKR1NXC94","ticketPrice":275.0,"status":"completed","soldDate":"2026-03-30 9:52 AM"},{"camperFirst":"Leland","camperLast":"Leclair","normalizedName":"Leland Leclair","dob":"2021-01-18","age":5,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Half Day","extendedCare":false,"parentFirst":"Sarah","parentLast":"Leclair","parentEmail":"sarahesma1991@icloud.com","parentPhone":"(813) 952-4833","orderId":"73945703","orderNumber":"SMMRCMP2026NNHKA001K","ticketId":"01KN1Y5PSF6TCK6W693","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-31 8:33 AM"},{"camperFirst":"Ela","camperLast":"Guler","normalizedName":"Ela Guler","dob":"2018-10-30","age":7,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Half Day","extendedCare":false,"parentFirst":"Sarah","parentLast":"Leclair","parentEmail":"sarahesma1991@icloud.com","parentPhone":"(813) 952-4833","orderId":"73945811","orderNumber":"SMMRCMP2026NNHKA001L","ticketId":"01KN1YEPPW6DG1AZPV0","ticketPrice":175.0,"status":"completed","soldDate":"2026-03-31 8:38 AM"},{"camperFirst":"Lucas","camperLast":"Lello","normalizedName":"Lucas Lello","dob":"2020-10-10","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Antonino","parentLast":"Lello","parentEmail":"antlello@aol.com","parentPhone":"(631) 627-5364","orderId":"73967967","orderNumber":"SMMRCMP2026NNHKA001M","ticketId":"01KN30GW6APRR4QHNAE","ticketPrice":275.0,"status":"completed","soldDate":"2026-03-31 6:34 PM"},{"camperFirst":"Lucas","camperLast":"Lello","normalizedName":"Lucas Lello","dob":"2020-10-10","age":5,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Antonino","parentLast":"Lello","parentEmail":"antlello@aol.com","parentPhone":"(631) 627-5364","orderId":"73967967","orderNumber":"SMMRCMP2026NNHKA001M","ticketId":"01KN30GW6APRR4QHNAE","ticketPrice":275.0,"status":"completed","soldDate":"2026-03-31 6:34 PM"},{"camperFirst":"Lucas","camperLast":"Lello","normalizedName":"Lucas Lello","dob":"2020-10-10","age":5,"ageGroup":"5-7","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":false,"parentFirst":"Antonino","parentLast":"Lello","parentEmail":"antlello@aol.com","parentPhone":"(631) 627-5364","orderId":"73967967","orderNumber":"SMMRCMP2026NNHKA001M","ticketId":"01KN30GW6APRR4QHNAE","ticketPrice":275.0,"status":"completed","soldDate":"2026-03-31 6:34 PM"},{"camperFirst":"Lucas","camperLast":"Lello","normalizedName":"Lucas Lello","dob":"2020-10-10","age":5,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Antonino","parentLast":"Lello","parentEmail":"antlello@aol.com","parentPhone":"(631) 627-5364","orderId":"73967967","orderNumber":"SMMRCMP2026NNHKA001M","ticketId":"01KN30GW6APRR4QHNAE","ticketPrice":275.0,"status":"completed","soldDate":"2026-03-31 6:34 PM"},{"camperFirst":"David","camperLast":"Toma","normalizedName":"David Toma","dob":"2017-10-20","age":8,"ageGroup":"8-11","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Kyle","parentLast":"Toma","parentEmail":"kylebenich@yahoo.com","parentPhone":"(480) 399-8860","orderId":"73968746","orderNumber":"SMMRCMP2026NNHKA001N","ticketId":"01KN31V6E6KNYPAJCES","ticketPrice":300.0,"status":"completed","soldDate":"2026-03-31 6:57 PM"},{"camperFirst":"Carson","camperLast":"Lancaster","normalizedName":"Carson Lancaster","dob":"2019-06-12","age":6,"ageGroup":"5-7","week":5,"weekDates":"July 6–10","dayType":"Full Day","extendedCare":false,"parentFirst":"Carson","parentLast":"Lancaster","parentEmail":"c.maefrankey@gmail.com","parentPhone":"(941) 807-3111","orderId":"74014556","orderNumber":"SMMRCMP2026NNHKA001P","ticketId":"01KN5PZKZFEMQX8PKPH","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-01 7:45 PM"},{"camperFirst":"Cash","camperLast":"Lancaster","normalizedName":"Cash Lancaster","dob":"2019-06-12","age":6,"ageGroup":"5-7","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":false,"parentFirst":"Carson","parentLast":"Lancaster","parentEmail":"c.maefrankey@gmail.com","parentPhone":"(941) 807-3111","orderId":"74014556","orderNumber":"SMMRCMP2026NNHKA001P","ticketId":"01KN5PZKZD4EG1HRRDV","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-01 7:45 PM"},{"camperFirst":"Cash","camperLast":"Lancaster","normalizedName":"Cash Lancaster","dob":"2019-06-12","age":6,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Carson","parentLast":"Lancaster","parentEmail":"c.maefrankey@gmail.com","parentPhone":"(941) 807-3111","orderId":"74014556","orderNumber":"SMMRCMP2026NNHKA001P","ticketId":"01KN5PZKZAXZPE5E090","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-01 7:45 PM"},{"camperFirst":"Noah","camperLast":"Daidone","normalizedName":"Noah Daidone","dob":"2020-03-04","age":6,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Half Day","extendedCare":false,"parentFirst":"Lorraine","parentLast":"Daidone","parentEmail":"l.daidone20@gmail.com","parentPhone":"(941) 267-7227","orderId":"74025567","orderNumber":"SMMRCMP2026NNHKA001Q","ticketId":"01KN6NJDX8D8X4S2HFC","ticketPrice":175.0,"status":"pre-registered","soldDate":"2026-04-02 4:39 AM"},{"camperFirst":"Noah","camperLast":"Daidone","normalizedName":"Noah Daidone","dob":"2020-03-04","age":6,"ageGroup":"5-7","week":5,"weekDates":"July 6–10","dayType":"Half Day","extendedCare":false,"parentFirst":"Lorraine","parentLast":"Daidone","parentEmail":"l.daidone20@gmail.com","parentPhone":"(941) 267-7227","orderId":"74025567","orderNumber":"SMMRCMP2026NNHKA001Q","ticketId":"01KN6NJDXCZDY0RVMEJ","ticketPrice":175.0,"status":"pre-registered","soldDate":"2026-04-02 4:39 AM"},{"camperFirst":"Caelen","camperLast":"Connolly","normalizedName":"Caelen Connolly","dob":"2018-11-29","age":7,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Alexis","parentLast":"Connolly","parentEmail":"alexisc@connollyortho.com","parentPhone":"(941) 725-4606","orderId":"74027149","orderNumber":"SMMRCMP2026NNHKA001R","ticketId":"01KN727XFCX31XJ4K70","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-02 8:21 AM"},{"camperFirst":"Kannon","camperLast":"Connolly","normalizedName":"Kannon Connolly","dob":"2021-05-26","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Alexis","parentLast":"Connolly","parentEmail":"alexisc@connollyortho.com","parentPhone":"(941) 725-4606","orderId":"74027149","orderNumber":"SMMRCMP2026NNHKA001R","ticketId":"01KN727XFEKRFTS9WXG","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-02 8:21 AM"},{"camperFirst":"Caelen","camperLast":"Connolly","normalizedName":"Caelen Connolly","dob":"2018-11-29","age":7,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Alexis","parentLast":"Connolly","parentEmail":"alexisc@connollyortho.com","parentPhone":"(941) 725-4606","orderId":"74027149","orderNumber":"SMMRCMP2026NNHKA001R","ticketId":"01KN727XFF5QYTCGJTD","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-02 8:21 AM"},{"camperFirst":"Kannon","camperLast":"Connolly","normalizedName":"Kannon Connolly","dob":"2021-05-26","age":5,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Alexis","parentLast":"Connolly","parentEmail":"alexisc@connollyortho.com","parentPhone":"(941) 725-4606","orderId":"74027149","orderNumber":"SMMRCMP2026NNHKA001R","ticketId":"01KN727XFGZQAK100JC","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-02 8:21 AM"},{"camperFirst":"Lana","camperLast":"Wenzel","normalizedName":"Lana Wenzel","dob":"2019-07-24","age":6,"ageGroup":"5-7","week":5,"weekDates":"July 6–10","dayType":"Full Day","extendedCare":false,"parentFirst":"Grace","parentLast":"Wenzel","parentEmail":"grace@satorealestate.com","parentPhone":"(941) 962-4719","orderId":"74068755","orderNumber":"SMMRCMP2026NNHKA001S","ticketId":"01KN9PA003EX2HN55GV","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-03 8:50 AM"},{"camperFirst":"Lana","camperLast":"Wenzel","normalizedName":"Lana Wenzel","dob":"2019-07-24","age":6,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Grace","parentLast":"Wenzel","parentEmail":"grace@satorealestate.com","parentPhone":"(941) 962-4719","orderId":"74068755","orderNumber":"SMMRCMP2026NNHKA001S","ticketId":"01KN9PA001JGYPYC1SM","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-03 8:50 AM"},{"camperFirst":"Claytons","camperLast":"Culbertson","normalizedName":"Claytons Culbertson","dob":"2019-04-19","age":7,"ageGroup":"5-7","week":8,"weekDates":"July 27–31","dayType":"Half Day","extendedCare":false,"parentFirst":"Kimberly","parentLast":"Culbertson","parentEmail":"kculbertson72485@gmail.com","parentPhone":"(727) 482-6642","orderId":"74161735","orderNumber":"SMMRCMP2026NNHKA001T","ticketId":"01KNF966Z9SN8ENTM5A","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-05 12:56 PM"},{"camperFirst":"Clayton","camperLast":"Culbertson","normalizedName":"Clayton Culbertson","dob":"2019-04-19","age":7,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Half Day","extendedCare":false,"parentFirst":"Kimberly","parentLast":"Culbertson","parentEmail":"kculbertson72485@gmail.com","parentPhone":"(727) 482-6642","orderId":"74161735","orderNumber":"SMMRCMP2026NNHKA001T","ticketId":"01KNF966Z71TD94ATBJ","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-05 12:56 PM"},{"camperFirst":"Ford","camperLast":"Burcham","normalizedName":"Ford Burcham","dob":"2021-02-09","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Kaitlyn","parentLast":"Burcham","parentEmail":"kaitlynkorb@gmail.com","parentPhone":"(631) 672-3764","orderId":"74237207","orderNumber":"SMMRCMP2026NNHKA001V","ticketId":"01KNMM8BQTYV3THYQ3P","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-07 2:46 PM"},{"camperFirst":"Nathan","camperLast":"Buttice","normalizedName":"Nathan Buttice","dob":"2021-02-20","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Jennifer","parentLast":"Treadway","parentEmail":"treadwayjennifer@ymail.com","parentPhone":"(941) 961-3147","orderId":"74531892","orderNumber":"SMMRCMP2026NNHKA001W","ticketId":"01KP3BY1KVSH60K6RZ8","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-13 8:09 AM"},{"camperFirst":"Benjamin","camperLast":"Buttice","normalizedName":"Benjamin Buttice","dob":"2016-07-26","age":9,"ageGroup":"8-11","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Jennifer","parentLast":"Treadway","parentEmail":"treadwayjennifer@ymail.com","parentPhone":"(941) 961-3147","orderId":"74531892","orderNumber":"SMMRCMP2026NNHKA001W","ticketId":"01KP3BY1KWJ3YA8YS4S","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-13 8:09 AM"},{"camperFirst":"Juliana","camperLast":"Treadwqay","normalizedName":"Juliana Treadwqay","dob":"2017-01-22","age":9,"ageGroup":"8-11","week":7,"weekDates":"July 20–24","dayType":"Half Day","extendedCare":false,"parentFirst":"Valerie","parentLast":"Treadway","parentEmail":"valerie.treadway@gmail.com","parentPhone":"(813) 802-9944","orderId":"74537764","orderNumber":"SMMRCMP2026NNHKA001X","ticketId":"01KP3PT8FQGHX83N6PJ","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-13 11:19 AM"},{"camperFirst":"Vincent","camperLast":"Treadway","normalizedName":"Vincent Treadway","dob":"2019-01-04","age":7,"ageGroup":"5-7","week":7,"weekDates":"July 20–24","dayType":"Half Day","extendedCare":false,"parentFirst":"Valerie","parentLast":"Treadway","parentEmail":"valerie.treadway@gmail.com","parentPhone":"(813) 802-9944","orderId":"74537764","orderNumber":"SMMRCMP2026NNHKA001X","ticketId":"01KP3PT8FS5SQ2BVJQZ","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-13 11:19 AM"},{"camperFirst":"Sebastian","camperLast":"Susini","normalizedName":"Sebastian Susini","dob":"2017-01-12","age":9,"ageGroup":"8-11","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Erica","parentLast":"Collins","parentEmail":"ericaelizabeth077@gmail.com","parentPhone":"(443) 827-2289","orderId":"74561742","orderNumber":"SMMRCMP2026NNHKA001Z","ticketId":"01KP4RK5BWGNQRMZ6Z0","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-13 9:09 PM"},{"camperFirst":"Scarlett","camperLast":"Susini","normalizedName":"Scarlett Susini","dob":"2021-05-16","age":5,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Erica","parentLast":"Collins","parentEmail":"ericaelizabeth077@gmail.com","parentPhone":"(443) 827-2289","orderId":"74561742","orderNumber":"SMMRCMP2026NNHKA001Z","ticketId":"01KP4RK5BZKPT1V14C6","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-13 9:09 PM"},{"camperFirst":"Sonny","camperLast":"Susini","normalizedName":"Sonny Susini","dob":"2018-08-18","age":7,"ageGroup":"5-7","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Erica","parentLast":"Collins","parentEmail":"ericaelizabeth077@gmail.com","parentPhone":"(443) 827-2289","orderId":"74561742","orderNumber":"SMMRCMP2026NNHKA001Z","ticketId":"01KP4RK5BYVES6XG6A0","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-13 9:09 PM"},{"camperFirst":"Benjamin","camperLast":"Buttice","normalizedName":"Benjamin Buttice","dob":"2016-07-26","age":9,"ageGroup":"8-11","week":7,"weekDates":"July 20–24","dayType":"Half Day","extendedCare":false,"parentFirst":"Jennifer","parentLast":"Treadway","parentEmail":"treadwayjennifer@ymail.com","parentPhone":"(941) 961-3147","orderId":"74570271","orderNumber":"SMMRCMP2026NNHKA0020","ticketId":"01KP5YXYX9QQDGDRHN6","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-14 8:19 AM"},{"camperFirst":"Nathan","camperLast":"Buttice","normalizedName":"Nathan Buttice","dob":"2021-02-20","age":5,"ageGroup":"5-7","week":7,"weekDates":"July 20–24","dayType":"Half Day","extendedCare":false,"parentFirst":"Jennifer","parentLast":"Treadway","parentEmail":"treadwayjennifer@ymail.com","parentPhone":"(941) 961-3147","orderId":"74570271","orderNumber":"SMMRCMP2026NNHKA0020","ticketId":"01KP5YXYXBE2RWTP4SE","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-14 8:19 AM"},{"camperFirst":"Brilynn","camperLast":"Morin","normalizedName":"Brilynn Morin","dob":"2021-02-20","age":5,"ageGroup":"5-7","week":8,"weekDates":"July 27–31","dayType":"Full Day","extendedCare":true,"parentFirst":"Katie","parentLast":"Richesin","parentEmail":"klrichesin@gmail.com","parentPhone":"(254) 681-5936","orderId":"74608352","orderNumber":"SMMRCMP2026NNHKA0021","ticketId":"01KP88J7T3H8AVJ6JTX","ticketPrice":350.0,"status":"completed","soldDate":"2026-04-15 5:46 AM"},{"camperFirst":"Bellamy","camperLast":"Geisler","normalizedName":"Bellamy Geisler","dob":"2019-08-22","age":6,"ageGroup":"5-7","week":5,"weekDates":"July 6–10","dayType":"Full Day","extendedCare":false,"parentFirst":"Kimberly","parentLast":"Geisler","parentEmail":"geisler.kimi@gmail.com","parentPhone":"(612) 202-6218","orderId":"74641598","orderNumber":"SMMRCMP2026NNHKA0022","ticketId":"01KP9SDYWHVE5YG6ESQ","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-15 8:00 PM"},{"camperFirst":"Finnegan","camperLast":"Geisler","normalizedName":"Finnegan Geisler","dob":"2015-12-13","age":10,"ageGroup":"8-11","week":5,"weekDates":"July 6–10","dayType":"Full Day","extendedCare":false,"parentFirst":"Kimberly","parentLast":"Geisler","parentEmail":"geisler.kimi@gmail.com","parentPhone":"(612) 202-6218","orderId":"74641598","orderNumber":"SMMRCMP2026NNHKA0022","ticketId":"01KP9SDYWE93CBJC3EG","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-15 8:00 PM"},{"camperFirst":"Sullivan","camperLast":"Geisler","normalizedName":"Sullivan Geisler","dob":"2017-06-17","age":8,"ageGroup":"8-11","week":5,"weekDates":"July 6–10","dayType":"Full Day","extendedCare":false,"parentFirst":"Kimberly","parentLast":"Geisler","parentEmail":"geisler.kimi@gmail.com","parentPhone":"(612) 202-6218","orderId":"74641598","orderNumber":"SMMRCMP2026NNHKA0022","ticketId":"01KP9SDYWGYZ1T862AK","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-15 8:00 PM"},{"camperFirst":"Job","camperLast":"Keller","normalizedName":"Job Keller","dob":"2020-10-26","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Half Day","extendedCare":false,"parentFirst":"Kristyn","parentLast":"Keller","parentEmail":"kkeller8517@gmail.com","parentPhone":"(908) 328-7031","orderId":"74689333","orderNumber":"SMMRCMP2026NNHKA0023","ticketId":"01KPC9JY1Z9EB1BGZW8","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-16 7:21 PM"},{"camperFirst":"Charlotte","camperLast":"Fritch","normalizedName":"Charlotte Fritch","dob":"2020-08-06","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Amanda","parentLast":"Jones","parentEmail":"britaj30@yahoo.com","parentPhone":"(954) 899-3413","orderId":"74707718","orderNumber":"SMMRCMP2026NNHKA0024","ticketId":"01KPDNDKEA29958WSYN","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-17 8:07 AM"},{"camperFirst":"Jack","camperLast":"Porter","normalizedName":"Jack Porter","dob":"2018-03-16","age":8,"ageGroup":"8-11","week":6,"weekDates":"July 13–17","dayType":"Full Day","extendedCare":false,"parentFirst":"Jane","parentLast":"Porter","parentEmail":"jmpsocials26@gmail.com","parentPhone":"(443) 878-7659","orderId":"74712877","orderNumber":"SMMRCMP2026NNHKA0025","ticketId":"01KPDVT9EV8RH126B61","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-17 9:59 AM"},{"camperFirst":"Olivia","camperLast":"Porter","normalizedName":"Olivia Porter","dob":"2018-06-26","age":7,"ageGroup":"5-7","week":6,"weekDates":"July 13–17","dayType":"Full Day","extendedCare":false,"parentFirst":"Jane","parentLast":"Porter","parentEmail":"jmpsocials26@gmail.com","parentPhone":"(443) 878-7659","orderId":"74712877","orderNumber":"SMMRCMP2026NNHKA0025","ticketId":"01KPDVT9EX18MW2G5QT","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-17 9:59 AM"},{"camperFirst":"Nevaeh","camperLast":"Spikes","normalizedName":"Nevaeh Spikes","dob":"2020-04-06","age":6,"ageGroup":"5-7","week":3,"weekDates":"June 15–19","dayType":"Half Day","extendedCare":false,"parentFirst":"April","parentLast":"Riggins","parentEmail":"aprilriggins@tampabay.rr.com","parentPhone":"(941) 538-2032","orderId":"74882618","orderNumber":"SMMRCMP2026NNHKA0026","ticketId":"01KPNZXX4N94MF20GB6","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-20 1:45 PM"},{"camperFirst":"Wyatt","camperLast":"Clarke","normalizedName":"Wyatt Clarke","dob":"2017-12-04","age":8,"ageGroup":"8-11","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":false,"parentFirst":"Rebecca","parentLast":"Ries","parentEmail":"bries04@gmail.com","parentPhone":"(727) 510-1110","orderId":"74911792","orderNumber":"SMMRCMP2026NNHKA0027","ticketId":"01KPR9202KQNQC2N63E","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-21 11:03 AM"},{"camperFirst":"Everly","camperLast":"Clarke","normalizedName":"Everly Clarke","dob":"2017-12-04","age":8,"ageGroup":"8-11","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":false,"parentFirst":"Rebecca","parentLast":"Ries","parentEmail":"bries04@gmail.com","parentPhone":"(727) 510-1110","orderId":"74911792","orderNumber":"SMMRCMP2026NNHKA0027","ticketId":"01KPR9202NFVWQRYFCV","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-21 11:03 AM"},{"camperFirst":"Kori","camperLast":"Nugent","normalizedName":"Kori Nugent","dob":"2019-09-23","age":6,"ageGroup":"5-7","week":7,"weekDates":"July 20–24","dayType":"Half Day","extendedCare":false,"parentFirst":"Tessa","parentLast":"Nugent","parentEmail":"tessablosser@gmail.com","parentPhone":"(813) 895-5754","orderId":"74937671","orderNumber":"SMMRCMP2026NNHKA0028","ticketId":"01KPSAKCZXG33DW8FSD","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-21 8:49 PM"},{"camperFirst":"Knox","camperLast":"D’Amico","normalizedName":"Knox D’Amico","dob":"2019-12-09","age":6,"ageGroup":"5-7","week":8,"weekDates":"July 27–31","dayType":"Half Day","extendedCare":false,"parentFirst":"Samantha","parentLast":"Rotella","parentEmail":"mannie.damico@gmail.com","parentPhone":"(978) 758-6211","orderId":"74941929","orderNumber":"SMMRCMP2026NNHKA0029","ticketId":"01KPSJ0GN08YJFPNFVB","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-21 10:58 PM"},{"camperFirst":"Ryan","camperLast":"D’Amico","normalizedName":"Ryan D’Amico","dob":"2017-12-06","age":8,"ageGroup":"8-11","week":8,"weekDates":"July 27–31","dayType":"Half Day","extendedCare":false,"parentFirst":"Samantha","parentLast":"Rotella","parentEmail":"mannie.damico@gmail.com","parentPhone":"(978) 758-6211","orderId":"74941929","orderNumber":"SMMRCMP2026NNHKA0029","ticketId":"01KPSJ0GMYSECTRN492","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-21 10:58 PM"},{"camperFirst":"George","camperLast":"Hernando","normalizedName":"George Hernando","dob":"2021-05-25","age":5,"ageGroup":"5-7","week":8,"weekDates":"July 27–31","dayType":"Half Day","extendedCare":false,"parentFirst":"Carese","parentLast":"Hernando","parentEmail":"caresebailey@gmail.com","parentPhone":"(727) 631-2902","orderId":"74942275","orderNumber":"SMMRCMP2026NNHKA002B","ticketId":"01KPSJTXT86SBSFWBFR","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-21 11:13 PM"},{"camperFirst":"Bailey","camperLast":"Hernando","normalizedName":"Bailey Hernando","dob":"2016-10-21","age":9,"ageGroup":"8-11","week":8,"weekDates":"July 27–31","dayType":"Half Day","extendedCare":false,"parentFirst":"Carese","parentLast":"Hernando","parentEmail":"caresebailey@gmail.com","parentPhone":"(727) 631-2902","orderId":"74942275","orderNumber":"SMMRCMP2026NNHKA002B","ticketId":"01KPSJTXT7FE02BBS13","ticketPrice":175.0,"status":"completed","soldDate":"2026-04-21 11:13 PM"},{"camperFirst":"Karaleigh","camperLast":"Braden","normalizedName":"Karaleigh Braden","dob":"2018-03-28","age":8,"ageGroup":"8-11","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":true,"parentFirst":"Boston","parentLast":"Braden","parentEmail":"kaleigh.braden03@gmail.com","parentPhone":"(941) 779-5319","orderId":"74980063","orderNumber":"SMMRCMP2026NNHKA002C","ticketId":"01KPVZYBB2DCEG19TS9","ticketPrice":325.0,"status":"completed","soldDate":"2026-04-22 9:40 PM"},{"camperFirst":"Karaleigh","camperLast":"Braden","normalizedName":"Karaleigh Braden","dob":"2018-03-28","age":8,"ageGroup":"8-11","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":true,"parentFirst":"Boston","parentLast":"Braden","parentEmail":"kaleigh.braden03@gmail.com","parentPhone":"(941) 779-5319","orderId":"74980063","orderNumber":"SMMRCMP2026NNHKA002C","ticketId":"01KPVZYBB2DCEG19TS9","ticketPrice":325.0,"status":"completed","soldDate":"2026-04-22 9:40 PM"},{"camperFirst":"Karaleigh","camperLast":"Braden","normalizedName":"Karaleigh Braden","dob":"2018-03-28","age":8,"ageGroup":"8-11","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":true,"parentFirst":"Boston","parentLast":"Braden","parentEmail":"kaleigh.braden03@gmail.com","parentPhone":"(941) 779-5319","orderId":"74980063","orderNumber":"SMMRCMP2026NNHKA002C","ticketId":"01KPVZYBB2DCEG19TS9","ticketPrice":325.0,"status":"completed","soldDate":"2026-04-22 9:40 PM"},{"camperFirst":"Karaleigh","camperLast":"Braden","normalizedName":"Karaleigh Braden","dob":"2018-03-28","age":8,"ageGroup":"8-11","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":true,"parentFirst":"Boston","parentLast":"Braden","parentEmail":"kaleigh.braden03@gmail.com","parentPhone":"(941) 779-5319","orderId":"74980063","orderNumber":"SMMRCMP2026NNHKA002C","ticketId":"01KPVZYBB2DCEG19TS9","ticketPrice":325.0,"status":"completed","soldDate":"2026-04-22 9:40 PM"},{"camperFirst":"Karaleigh","camperLast":"Braden","normalizedName":"Karaleigh Braden","dob":"2018-03-28","age":8,"ageGroup":"8-11","week":5,"weekDates":"July 6–10","dayType":"Full Day","extendedCare":true,"parentFirst":"Boston","parentLast":"Braden","parentEmail":"kaleigh.braden03@gmail.com","parentPhone":"(941) 779-5319","orderId":"74980063","orderNumber":"SMMRCMP2026NNHKA002C","ticketId":"01KPVZYBB2DCEG19TS9","ticketPrice":325.0,"status":"completed","soldDate":"2026-04-22 9:40 PM"},{"camperFirst":"Karaleigh","camperLast":"Braden","normalizedName":"Karaleigh Braden","dob":"2018-03-28","age":8,"ageGroup":"8-11","week":6,"weekDates":"July 13–17","dayType":"Full Day","extendedCare":true,"parentFirst":"Boston","parentLast":"Braden","parentEmail":"kaleigh.braden03@gmail.com","parentPhone":"(941) 779-5319","orderId":"74980063","orderNumber":"SMMRCMP2026NNHKA002C","ticketId":"01KPVZYBB2DCEG19TS9","ticketPrice":325.0,"status":"completed","soldDate":"2026-04-22 9:40 PM"},{"camperFirst":"Karaleigh","camperLast":"Braden","normalizedName":"Karaleigh Braden","dob":"2018-03-28","age":8,"ageGroup":"8-11","week":7,"weekDates":"July 20–24","dayType":"Full Day","extendedCare":true,"parentFirst":"Boston","parentLast":"Braden","parentEmail":"kaleigh.braden03@gmail.com","parentPhone":"(941) 779-5319","orderId":"74980063","orderNumber":"SMMRCMP2026NNHKA002C","ticketId":"01KPVZYBB2DCEG19TS9","ticketPrice":325.0,"status":"completed","soldDate":"2026-04-22 9:40 PM"},{"camperFirst":"Karaleigh","camperLast":"Braden","normalizedName":"Karaleigh Braden","dob":"2018-03-28","age":8,"ageGroup":"8-11","week":8,"weekDates":"July 27–31","dayType":"Full Day","extendedCare":true,"parentFirst":"Boston","parentLast":"Braden","parentEmail":"kaleigh.braden03@gmail.com","parentPhone":"(941) 779-5319","orderId":"74980063","orderNumber":"SMMRCMP2026NNHKA002C","ticketId":"01KPVZYBB2DCEG19TS9","ticketPrice":325.0,"status":"completed","soldDate":"2026-04-22 9:40 PM"},{"camperFirst":"Karaleigh","camperLast":"Braden","normalizedName":"Karaleigh Braden","dob":"2018-03-28","age":8,"ageGroup":"8-11","week":9,"weekDates":"August 3–7","dayType":"Full Day","extendedCare":true,"parentFirst":"Boston","parentLast":"Braden","parentEmail":"kaleigh.braden03@gmail.com","parentPhone":"(941) 779-5319","orderId":"74980063","orderNumber":"SMMRCMP2026NNHKA002C","ticketId":"01KPVZYBB2DCEG19TS9","ticketPrice":325.0,"status":"completed","soldDate":"2026-04-22 9:40 PM"},{"camperFirst":"Rolan","camperLast":"Pike","normalizedName":"Rolan Pike","dob":"2016-10-07","age":9,"ageGroup":"8-11","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Elvira","parentLast":"Galimova","parentEmail":"elvira757@gmail.com","parentPhone":"(773) 675-7069","orderId":"75004845","orderNumber":"SMMRCMP2026NNHKA002D","ticketId":"01KPXRV1YYDNSYXPCFR","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-23 2:15 PM"},{"camperFirst":"Alan","camperLast":"Pike","normalizedName":"Alan Pike","dob":"2021-05-05","age":5,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Elvira","parentLast":"Galimova","parentEmail":"elvira757@gmail.com","parentPhone":"(773) 675-7069","orderId":"75004845","orderNumber":"SMMRCMP2026NNHKA002D","ticketId":"01KPXRV1Z0BZ49YZ951","ticketPrice":250.0,"status":"completed","soldDate":"2026-04-23 2:15 PM"},{"camperFirst":"Addy","camperLast":"Ungarelli","normalizedName":"Addy Ungarelli","dob":"2019-12-20","age":6,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Alexis","parentLast":"Connolly","parentEmail":"alexisc@connollyortho.com","parentPhone":"(941) 725-4606","orderId":"75040886","orderNumber":"SMMRCMP2026NNHKA002F","ticketId":"01KPZV0TS4AZDGK0GP7","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-24 9:31 AM"},{"camperFirst":"Addy","camperLast":"Ungarelli","normalizedName":"Addy Ungarelli","dob":"2019-12-20","age":6,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Alexis","parentLast":"Connolly","parentEmail":"alexisc@connollyortho.com","parentPhone":"(941) 725-4606","orderId":"75040886","orderNumber":"SMMRCMP2026NNHKA002F","ticketId":"01KPZV0TS2FPNZ8C9YR","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-24 9:31 AM"},{"camperFirst":"Alondra","camperLast":"Sanchez","normalizedName":"Alondra Sanchez","dob":"2016-09-29","age":9,"ageGroup":"8-11","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Ivan","parentLast":"Sanchez","parentEmail":"familiasanchez829@gmail.com","parentPhone":"(941) 290-0763","orderId":"75059578","orderNumber":"SMMRCMP2026NNHKA002G","ticketId":"01KQ0CW46709JMTB0QC","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-24 2:43 PM"},{"camperFirst":"Alondra","camperLast":"Sanchez","normalizedName":"Alondra Sanchez","dob":"2016-09-29","age":9,"ageGroup":"8-11","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":false,"parentFirst":"Ivan","parentLast":"Sanchez","parentEmail":"familiasanchez829@gmail.com","parentPhone":"(941) 290-0763","orderId":"75059578","orderNumber":"SMMRCMP2026NNHKA002G","ticketId":"01KQ0CW46GEGC6E4XD3","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-24 2:43 PM"},{"camperFirst":"Hridhay","camperLast":"Moolya","normalizedName":"Hridhay Moolya","dob":"2021-02-03","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Dheeraj","parentLast":"Moolya","parentEmail":"moolya.dheeraj@gmail.com","parentPhone":"(704) 915-9343","orderId":"75180850","orderNumber":"SMMRCMP2026NNHKA002H","ticketId":"01KQ53AKEZ8V2JAK5VR","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-26 10:33 AM"},{"camperFirst":"Chloe","camperLast":"Cunningham","normalizedName":"Chloe Cunningham","dob":"2014-09-19","age":11,"ageGroup":"8-11","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Ashley","parentLast":"Hawk","parentEmail":"ashleychavez0905@gmail.com","parentPhone":"(561) 639-3585","orderId":"75288626","orderNumber":"SMMRCMP2026NNHKA002K","ticketId":"01KQBMEYK5AB4EGV19Q","ticketPrice":300.0,"status":"pending offline payment","soldDate":"2026-04-28 11:27 PM"},{"camperFirst":"Charley","camperLast":"Coleman","normalizedName":"Charley Coleman","dob":"2019-05-16","age":7,"ageGroup":"5-7","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":false,"parentFirst":"Charlotte","parentLast":"Ekstrom","parentEmail":"cekstr2@gmail.com","parentPhone":"(443) 616-6140","orderId":"75331802","orderNumber":"SMMRCMP2026NNHKA002L","ticketId":"01KQF94E6CTPGE6EMB7","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-30 9:26 AM"},{"camperFirst":"Cohen","camperLast":"Goeden","normalizedName":"Cohen Goeden","dob":"2019-03-20","age":7,"ageGroup":"5-7","week":3,"weekDates":"June 15–19","dayType":"Full Day","extendedCare":false,"parentFirst":"Charlotte","parentLast":"Ekstrom","parentEmail":"smouton45@gmail.com","parentPhone":"(941) 447-0199","orderId":"75331851","orderNumber":"SMMRCMP2026NNHKA002N","ticketId":"01KQF9E6A18SFXS7S6Y","ticketPrice":300.0,"status":"completed","soldDate":"2026-04-30 9:32 AM"},{"camperFirst":"Mila","camperLast":"Close","normalizedName":"Mila Close","dob":"2018-01-31","age":8,"ageGroup":"8-11","week":7,"weekDates":"July 20–24","dayType":"Full Day","extendedCare":false,"parentFirst":"Anastasiia","parentLast":"Close","parentEmail":"anaclose@icloud.com","parentPhone":"(941) 875-1120","orderId":"75536393","orderNumber":"SMMRCMP2026NNHKA002P","ticketId":"01KQSW9ZB4R0KRTVXC3","ticketPrice":300.0,"status":"completed","soldDate":"2026-05-04 12:14 PM"},{"camperFirst":"Teya","camperLast":"Richardson","normalizedName":"Teya Richardson","dob":"2016-09-11","age":9,"ageGroup":"8-11","week":4,"weekDates":"June 22–26","dayType":"Full Day","extendedCare":false,"parentFirst":"Sarah","parentLast":"Richardson","parentEmail":"mrsricho@gmail.com","parentPhone":"(415) 359-7204","orderId":"75546618","orderNumber":"SMMRCMP2026NNHKA002Q","ticketId":"01KQTBTS0NN30GJ4XAM","ticketPrice":300.0,"status":"completed","soldDate":"2026-05-04 4:45 PM"},{"camperFirst":"Aidan","camperLast":"Carroll","normalizedName":"Aidan Carroll","dob":"2017-10-26","age":8,"ageGroup":"8-11","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Lindsey","parentLast":"Carroll","parentEmail":"linzet@gmail.com","parentPhone":"(516) 410-7797","orderId":"75572407","orderNumber":"SMMRCMP2026NNHKA002S","ticketId":"01KQWJDQX6P3DT1HHA1","ticketPrice":300.0,"status":"completed","soldDate":"2026-05-05 1:19 PM"},{"camperFirst":"Reagan","camperLast":"Sibley","normalizedName":"Reagan Sibley","dob":"2021-03-12","age":5,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Lindy","parentLast":"Charity","parentEmail":"lindycharity@gmail.com","parentPhone":"(859) 270-6144","orderId":"75585116","orderNumber":"SMMRCMP2026NNHKA002T","ticketId":"01KQX50J1AS5Y5ATBSY","ticketPrice":250.0,"status":"completed","soldDate":"2026-05-05 6:44 PM"},{"camperFirst":"Andie","camperLast":"Sibley","normalizedName":"Andie Sibley","dob":"2019-09-29","age":6,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Lindy","parentLast":"Charity","parentEmail":"lindycharity@gmail.com","parentPhone":"(859) 270-6144","orderId":"75585116","orderNumber":"SMMRCMP2026NNHKA002T","ticketId":"01KQX50J18K942BHTD5","ticketPrice":250.0,"status":"completed","soldDate":"2026-05-05 6:44 PM"},{"camperFirst":"Emmett","camperLast":"Eversoll","normalizedName":"Emmett Eversoll","dob":"2018-08-04","age":7,"ageGroup":"5-7","week":1,"weekDates":"June 1–5","dayType":"Full Day","extendedCare":false,"parentFirst":"Brooke","parentLast":"Eversoll","parentEmail":"brookeeversoll@gmail.com","parentPhone":"(321) 439-5348","orderId":"75592202","orderNumber":"SMMRCMP2026NNHKA002V","ticketId":"01KQXGNX4E5QH7F2FCH","ticketPrice":300.0,"status":"completed","soldDate":"2026-05-05 10:08 PM"},{"camperFirst":"Emmett","camperLast":"Eversoll","normalizedName":"Emmett Eversoll","dob":"2018-08-04","age":7,"ageGroup":"5-7","week":2,"weekDates":"June 8–12","dayType":"Full Day","extendedCare":false,"parentFirst":"Brooke","parentLast":"Eversoll","parentEmail":"brookeeversoll@gmail.com","parentPhone":"(321) 439-5348","orderId":"75592202","orderNumber":"SMMRCMP2026NNHKA002V","ticketId":"01KQXGNX6GK07TNAMJX","ticketPrice":300.0,"status":"completed","soldDate":"2026-05-05 10:08 PM"}],"dataQuality":{"possibleDuplicates":[],"missingDob":[],"outOfRangeAge":[{"name":"Joseph Przybyla","age":4,"week":1},{"name":"Brilynn (Brie) Blankenfeld","age":4,"week":7}],"preRegistered":[{"name":"Noah Daidone","week":2,"parentEmail":"l.daidone20@gmail.com"},{"name":"Noah Daidone","week":5,"parentEmail":"l.daidone20@gmail.com"}],"pendingOfflinePayment":["ashleychavez0905@gmail.com"]}};
+
+// ─── State ───────────────────────────────────────────────────────
+let campData = null;
+let filteredRows = [];
+let sortKey = "week";
+let sortDir = 1;
+
+// ─── Boot ─────────────────────────────────────────────────────────
+async function init() {
+  campData = await loadData();
+  renderSummary();
+  renderWeekTable();
+  filteredRows = getConfirmedRows();
+  renderRoster();
+  renderDataQuality();
+  renderTrendChart();
+  document.getElementById("snapshotDate").textContent = campData.generatedAt
+    ? new Date(campData.generatedAt).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})
+    : "unknown date";
+}
+
+async function loadData() {
+  if (!DATA_ENDPOINT) {
+    setRefreshLabel(SNAPSHOT_DATA.generatedAt, false);
+    return SNAPSHOT_DATA;
+  }
+  const cacheKey = "af_camp_data";
+  const cacheTs = localStorage.getItem(cacheKey + "_ts");
+  const now = Date.now();
+  if (cacheTs && now - parseInt(cacheTs) < CACHE_SECONDS * 1000) {
+    try {
+      const d = JSON.parse(localStorage.getItem(cacheKey));
+      if (d) { setRefreshLabel(d.generatedAt, true); return d; }
+    } catch {}
+  }
+  try {
+    const resp = await fetch(DATA_ENDPOINT);
+    const d = await resp.json();
+    localStorage.setItem(cacheKey, JSON.stringify(d));
+    localStorage.setItem(cacheKey + "_ts", String(now));
+    setRefreshLabel(d.generatedAt, true);
+    document.getElementById("configBanner").style.display = "none";
+    document.getElementById("statusDot").style.background = "#52C041";
+    document.getElementById("dataSource").textContent = "Live";
+    return d;
+  } catch (e) {
+    console.warn("Live fetch failed, falling back to snapshot", e);
+    setRefreshLabel(SNAPSHOT_DATA.generatedAt, false);
+    return SNAPSHOT_DATA;
+  }
+}
+
+function setRefreshLabel(ts, isLive) {
+  const el = document.getElementById("refreshLabel");
+  if (!ts) { el.textContent = "Refreshed: unknown"; return; }
+  const d = new Date(ts);
+  const fmt = d.toLocaleDateString("en-US",{month:"short",day:"numeric"}) + " at "
+    + d.toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
+  el.textContent = "Refreshed: " + fmt;
+  if (isLive) document.getElementById("configBanner").style.display = "none";
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────
+function getConfirmedRows() {
+  return (campData.camperRows || []).filter(r =>
+    r.status === "completed" || r.status === "pending offline payment"
+  );
+}
+function getAllRows() { return campData.camperRows || []; }
+function fmtCurrency(n) {
+  return "$" + n.toLocaleString("en-US", {minimumFractionDigits:0, maximumFractionDigits:0});
+}
+function weekColor(n) {
+  if (n >= 30) return "wk-green";
+  if (n >= 20) return "wk-yellow";
+  return "wk-red";
+}
+function statusTag(s) {
+  if (s === "completed") return `<span class="tag tag-green">Completed</span>`;
+  if (s === "pending offline payment") return `<span class="tag tag-amber">Pending offline</span>`;
+  if (s === "pre-registered") return `<span class="tag tag-yellow">Pre-registered</span>`;
+  return `<span class="tag tag-gray">${s}</span>`;
+}
+function dayTypeTag(d) {
+  if (d === "Full Day") return `<span class="tag tag-green">Full Day</span>`;
+  if (d === "Half Day") return `<span class="tag tag-blue">Half Day</span>`;
+  return `<span class="tag tag-gray">${d}</span>`;
+}
+
+// ─── Summary Cards ────────────────────────────────────────────────
+function renderSummary() {
+  const s = campData.summary;
+  const camp = new Date(2026, 5, 1); // June 1
+  const today = new Date();
+  const days = Math.max(0, Math.ceil((camp - today) / 86400000));
+  const cards = [
+    {label:"Unique Campers", value: s.uniqueCampers, sub:"confirmed registrations", cls:""},
+    {label:"Camp-Weeks Booked", value: s.totalCampWeeks, sub:"across 9 weeks", cls:""},
+    {label:"Total Revenue", value: fmtCurrency(s.totalRevenue), sub:fmtCurrency(s.paidRevenue)+" paid · "+fmtCurrency(s.pendingRevenue)+" pending", cls:""},
+    {label:"Weeks at Risk", value: s.weeksAtRisk.length + " of 9",
+     sub: s.weeksAtRisk.length > 0 ? "Wks " + s.weeksAtRisk.join(", ") + " need attention" : "All weeks on track",
+     cls: s.weeksAtRisk.length > 2 ? "at-risk" : ""},
+    {label:"Days Until Camp", value: days, sub:"Camp starts June 1, 2026", cls:"countdown"},
+  ];
+  document.getElementById("summaryCards").innerHTML = cards.map(c =>
+    `<div class="card ${c.cls}">
+      <div class="card-label">${c.label}</div>
+      <div class="card-value">${c.value}</div>
+      <div class="card-sub">${c.sub}</div>
+    </div>`
+  ).join("");
+  const ar = s.weeksAtRisk || [];
+  document.getElementById("atRiskSummary").textContent = ar.length > 0
+    ? `⚠️ ${ar.length} week${ar.length>1?"s":""} below 20 campers need marketing attention`
+    : "✅ All weeks on track";
+}
+
+// ─── Week Heatmap ─────────────────────────────────────────────────
+function renderWeekTable() {
+  const stats = campData.weekStats || [];
+  const WEEK_NAMES = ["","W1","W2","W3","W4","W5","W6","W7","W8","W9"];
+  const WEEK_DATES = ["","Jun 1–5","Jun 8–12","Jun 15–19","Jun 22–26","Jul 6–10","Jul 13–17","Jul 20–24","Jul 27–31","Aug 3–7"];
+  let html = "<thead><tr><th class=\"row-label\">Metric</th>";
+  for (let w = 1; w <= 9; w++) {
+    const s = stats.find(x => x.week === w) || {};
+    const cls = weekColor(s.total || 0);
+    html += `<th class="${cls}"><div class="wk-count">${s.total || 0}</div><span class="wk-dates">${WEEK_DATES[w]}</span></th>`;
+  }
+  html += "</tr></thead><tbody>";
+
+  const rows = [
+    {label:"Total Campers", fn: s => `<strong>${s.total||0}</strong>`},
+    {label:"Full Day", fn: s => s.fullDay||0},
+    {label:"Half Day", fn: s => s.halfDay||0},
+    {label:"Extended Care", fn: s => s.extendedCare||0},
+    {label:"Ages 5–7", fn: s => s.age5_7||0},
+    {label:"Ages 8–11", fn: s => s.age8_11||0},
+    {label:"Age 12", fn: s => s.age12||0},
+    {label:"Revenue", fn: s => `<span class="revenue-cell">${fmtCurrency(s.revenue||0)}</span>`},
+  ];
+  for (const row of rows) {
+    html += `<tr><td class="row-label">${row.label}</td>`;
+    for (let w = 1; w <= 9; w++) {
+      const s = stats.find(x => x.week === w) || {};
+      html += `<td>${row.fn(s)}</td>`;
+    }
+    html += "</tr>";
+  }
+  html += "</tbody>";
+  document.getElementById("weekTable").innerHTML = html;
+}
+
+// ─── Roster ───────────────────────────────────────────────────────
+function applyFilters() {
+  const all = getAllRows().filter(r =>
+    r.status === "completed" || r.status === "pending offline payment" || r.status === "pre-registered"
+  );
+  const search = document.getElementById("searchInput").value.toLowerCase().trim();
+  const week = document.getElementById("filterWeek").value;
+  const dayType = document.getElementById("filterDayType").value;
+  const age = document.getElementById("filterAge").value;
+  const status = document.getElementById("filterStatus").value;
+  filteredRows = all.filter(r => {
+    if (search && !(
+      r.normalizedName.toLowerCase().includes(search) ||
+      (r.parentFirst+" "+r.parentLast).toLowerCase().includes(search) ||
+      (r.parentEmail||"").toLowerCase().includes(search)
+    )) return false;
+    if (week && String(r.week) !== week) return false;
+    if (dayType && r.dayType !== dayType) return false;
+    if (age && r.ageGroup !== age) return false;
+    if (status && r.status !== status) return false;
+    return true;
+  });
+  // re-sort
+  filteredRows.sort((a,b) => {
+    const av = a[sortKey] ?? ""; const bv = b[sortKey] ?? "";
+    if (av < bv) return -1 * sortDir; if (av > bv) return 1 * sortDir; return 0;
+  });
+  renderRoster();
+}
+
+function sortBy(key) {
+  if (sortKey === key) sortDir *= -1; else { sortKey = key; sortDir = 1; }
+  document.querySelectorAll(".roster-table th").forEach(th => th.classList.remove("sorted"));
+  const th = document.getElementById("th-" + key);
+  if (th) th.classList.add("sorted");
+  applyFilters();
+}
+
+function clearFilters() {
+  document.getElementById("searchInput").value = "";
+  document.getElementById("filterWeek").value = "";
+  document.getElementById("filterDayType").value = "";
+  document.getElementById("filterAge").value = "";
+  document.getElementById("filterStatus").value = "";
+  applyFilters();
+}
+
+function renderRoster() {
+  const tbody = document.getElementById("rosterBody");
+  const noResults = document.getElementById("noResults");
+  const total = filteredRows.length;
+  document.getElementById("resultCount").textContent = `Showing ${total} row${total!==1?"s":""}`;
+  if (total === 0) {
+    tbody.innerHTML = ""; noResults.style.display = "block"; return;
+  }
+  noResults.style.display = "none";
+  tbody.innerHTML = filteredRows.map(r => {
+    const parentName = [r.parentFirst, r.parentLast].filter(Boolean).join(" ");
+    const age = r.age !== null && r.age !== undefined ? r.age : "—";
+    const ec = r.extendedCare ? '<span class="ec-yes">✓</span>' : '<span class="ec-no">—</span>';
+    const sold = r.soldDate ? r.soldDate.split(" ")[0] : "—";
+    const ageLabel = r.ageGroup !== "unknown"
+      ? `<span class="tag tag-gray">${age}</span>`
+      : `<span class="tag tag-red">?</span>`;
+    return `<tr>
+      <td><strong>${r.normalizedName||"—"}</strong></td>
+      <td>${ageLabel}</td>
+      <td><span class="tag tag-gray">Wk ${r.week}</span></td>
+      <td>${dayTypeTag(r.dayType)}</td>
+      <td style="text-align:center">${ec}</td>
+      <td>${parentName||"—"}</td>
+      <td style="white-space:nowrap;font-size:.78rem">${r.parentPhone||"—"}</td>
+      <td style="font-size:.75rem">${r.parentEmail||"—"}</td>
+      <td style="font-size:.78rem;white-space:nowrap">${sold}</td>
+      <td>${statusTag(r.status)}</td>
+    </tr>`;
+  }).join("");
+}
+
+// ─── Export CSV ───────────────────────────────────────────────────
+function exportCSV() {
+  const cols = ["Camper Name","Age","Age Group","Week","Week Dates","Day Type","Extended Care",
+    "Parent Name","Parent Email","Parent Phone","Sold Date","Status","Order Number"];
+  const rows = filteredRows.map(r => [
+    r.normalizedName, r.age, r.ageGroup, r.week, r.weekDates, r.dayType,
+    r.extendedCare?"Yes":"No",
+    [r.parentFirst, r.parentLast].filter(Boolean).join(" "),
+    r.parentEmail, r.parentPhone,
+    r.soldDate ? r.soldDate.split(" ")[0] : "",
+    r.status, r.orderNumber
+  ].map(v => `"${(v||"").toString().replace(/"/g,'\"')}"` ).join(","));
+  const csv = [cols.join(","), ...rows].join("\n");
+  const a = document.createElement("a");
+  a.href = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+  a.download = "ananda-camp-2026-roster-" + new Date().toISOString().slice(0,10) + ".csv";
+  a.click();
+}
+
+// ─── Data Quality ─────────────────────────────────────────────────
+function renderDataQuality() {
+  const dq = campData.dataQuality || {};
+
+  // Fuzzy duplicate detection on camper names
+  const allNames = [...new Set(getAllRows().map(r => r.normalizedName))].filter(Boolean);
+  const fuzzyDups = [];
+  for (let i = 0; i < allNames.length; i++) {
+    for (let j = i+1; j < allNames.length; j++) {
+      if (levenshtein(allNames[i].toLowerCase(), allNames[j].toLowerCase()) <= 2) {
+        fuzzyDups.push({a: allNames[i], b: allNames[j]});
+      }
+    }
+  }
+
+  const panels = [
+    {
+      key:"fuzzyDups",
+      label:"Possible Name Duplicates (fuzzy match)",
+      items: fuzzyDups,
+      severity: fuzzyDups.length > 0 ? "warn" : "zero",
+      render: d => `<strong>${d.a}</strong> ↔ <strong>${d.b}</strong>
+        <div class="dq-meta">Names differ by ≤ 2 characters — may be same child with a typo. Verify in TicketSpice.</div>`
+    },
+    {
+      key:"outOfRange",
+      label:"Out-of-Range Age (under 5 or over 12)",
+      items: dq.outOfRangeAge || [],
+      severity: (dq.outOfRangeAge||[]).length > 0 ? "alert" : "zero",
+      render: d => `<strong>${d.name}</strong> — Age ${d.age} (Week ${d.week})
+        <div class="dq-meta">Camp serves ages 5–12. Please verify DOB and confirm enrollment with parent.</div>`
+    },
+    {
+      key:"missingDob",
+      label:"Missing Date of Birth",
+      items: (dq.missingDob||[]).map(n=>({name:n})),
+      severity: (dq.missingDob||[]).length > 0 ? "warn" : "zero",
+      render: d => `<strong>${d.name}</strong>
+        <div class="dq-meta">No DOB on any row for this camper. Age group unknown — follow up with parent.</div>`
+    },
+    {
+      key:"preReg",
+      label:"Pre-Registered (not yet confirmed)",
+      items: dq.preRegistered || [],
+      severity: (dq.preRegistered||[]).length > 0 ? "warn" : "zero",
+      render: d => `<strong>${d.name}</strong> — Week ${d.week}
+        <div class="dq-meta">Status: pre-registered. Partial commitment. Follow up: ${d.parentEmail||"no email on file"}</div>`
+    },
+    {
+      key:"pendingOffline",
+      label:"Pending Offline Payment (collect at door or follow up)",
+      items: (dq.pendingOfflinePayment||[]).map(e=>({email:e})),
+      severity: (dq.pendingOfflinePayment||[]).length > 0 ? "warn" : "zero",
+      render: d => `<strong>${d.email}</strong>
+        <div class="dq-meta">Order has pending offline payment. Confirm receipt of check/cash before camp.</div>`
+    },
+  ];
+
+  document.getElementById("dqSection").innerHTML = panels.map((p,i) =>
+    `<div class="dq-panel">
+      <button class="dq-toggle" onclick="toggleDQ(${i})" id="dq-btn-${i}">
+        <span>
+          <span class="dq-badge ${p.severity}">${p.items.length}</span>
+          &nbsp; ${p.label}
+        </span>
+        <span class="chevron">▼</span>
+      </button>
+      <div class="dq-body" id="dq-body-${i}">
+        ${p.items.length === 0
+          ? '<div class="dq-item" style="color:var(--green-dark)">✅ No issues found.</div>'
+          : p.items.map(item => `<div class="dq-item">${p.render(item)}</div>`).join("")
+        }
+      </div>
+    </div>`
+  ).join("");
+
+  // Auto-open panels with issues
+  panels.forEach((p,i) => { if (p.items.length > 0) toggleDQ(i); });
+}
+
+function toggleDQ(i) {
+  const btn = document.getElementById("dq-btn-"+i);
+  const body = document.getElementById("dq-body-"+i);
+  btn.classList.toggle("open");
+  body.classList.toggle("open");
+}
+
+// ─── Levenshtein ─────────────────────────────────────────────────
+function levenshtein(a, b) {
+  const m = a.length, n = b.length;
+  if (Math.abs(m-n) > 3) return 99;
+  const dp = Array.from({length:m+1},(_,i)=>Array.from({length:n+1},(_,j)=>i===0?j:j===0?i:0));
+  for (let i=1;i<=m;i++) for (let j=1;j<=n;j++)
+    dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+
+// ─── Trend Chart ─────────────────────────────────────────────────
+function renderTrendChart() {
+  const canvas = document.getElementById("trendChart");
+  const ctx = canvas.getContext("2d");
+  const rows = getAllRows()
+    .filter(r => r.status === "completed" || r.status === "pending offline payment")
+    .filter(r => r.soldDate);
+  rows.sort((a,b) => a.soldDate.localeCompare(b.soldDate));
+
+  // De-duplicate: count unique camper-weeks by sold date
+  const byDate = {};
+  rows.forEach(r => {
+    const d = r.soldDate.split(" ")[0];
+    byDate[d] = (byDate[d]||0) + 1;
+  });
+  const dates = Object.keys(byDate).sort();
+  if (dates.length === 0) return;
+  let cum = 0;
+  const points = dates.map(d => { cum += byDate[d]; return {d, v: cum}; });
+
+  // Draw
+  const W = canvas.offsetWidth || 800;
+  const H = 160;
+  canvas.width = W; canvas.height = H;
+  const pad = {top:10, right:20, bottom:28, left:48};
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+  const maxV = points[points.length-1].v;
+  const x = i => pad.left + (i/(points.length-1||1))*cw;
+  const y = v => pad.top + ch - (v/maxV)*ch;
+
+  // Grid lines
+  ctx.strokeStyle = "#E2D8CC"; ctx.lineWidth = 1;
+  [0,.25,.5,.75,1].forEach(f => {
+    const yy = pad.top + ch - f*ch;
+    ctx.beginPath(); ctx.moveTo(pad.left, yy); ctx.lineTo(pad.left+cw, yy); ctx.stroke();
+    ctx.fillStyle = "#9A8070"; ctx.font = "11px Inter,sans-serif"; ctx.textAlign = "right";
+    ctx.fillText(Math.round(f*maxV), pad.left-6, yy+4);
+  });
+
+  // Fill gradient
+  const grad = ctx.createLinearGradient(0,pad.top,0,pad.top+ch);
+  grad.addColorStop(0,"rgba(58,107,53,.3)"); grad.addColorStop(1,"rgba(58,107,53,0)");
+  ctx.beginPath();
+  ctx.moveTo(x(0), y(points[0].v));
+  points.forEach((p,i) => ctx.lineTo(x(i), y(p.v)));
+  ctx.lineTo(x(points.length-1), H-pad.bottom);
+  ctx.lineTo(x(0), H-pad.bottom);
+  ctx.closePath(); ctx.fillStyle = grad; ctx.fill();
+
+  // Line
+  ctx.beginPath(); ctx.strokeStyle = "#3A6B35"; ctx.lineWidth = 2.5; ctx.lineJoin = "round";
+  points.forEach((p,i) => i===0 ? ctx.moveTo(x(i),y(p.v)) : ctx.lineTo(x(i),y(p.v)));
+  ctx.stroke();
+
+  // Dots at key points (every 14 days-ish)
+  ctx.fillStyle = "#3A6B35";
+  const interval = Math.max(1, Math.floor(points.length / 8));
+  points.forEach((p,i) => {
+    if (i === 0 || i === points.length-1 || i%interval===0) {
+      ctx.beginPath(); ctx.arc(x(i),y(p.v),3,0,2*Math.PI); ctx.fill();
+    }
+  });
+
+  // X axis labels (first & last date)
+  ctx.fillStyle = "#9A8070"; ctx.font = "10px Inter,sans-serif"; ctx.textAlign = "center";
+  const fmt = d => { const [y,m,day]=d.split("-"); return ["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+m]+" "+day; };
+  ctx.fillText(fmt(dates[0]), x(0), H-6);
+  ctx.fillText(fmt(dates[dates.length-1]), x(points.length-1), H-6);
+  if (points.length > 4) {
+    const mid = Math.floor(points.length/2);
+    ctx.fillText(fmt(dates[mid]), x(mid), H-6);
+  }
+
+  // Today marker
+  const todayStr = new Date().toISOString().slice(0,10);
+  const todayIdx = dates.findIndex(d => d >= todayStr);
+  if (todayIdx > 0 && todayIdx < points.length) {
+    ctx.strokeStyle = "#C8813A"; ctx.lineWidth = 1.5; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(x(todayIdx), pad.top); ctx.lineTo(x(todayIdx), H-pad.bottom); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "#C8813A"; ctx.font = "10px Inter,sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("Today", x(todayIdx), pad.top+8);
+  }
+}
+
+// ─── Run ─────────────────────────────────────────────────────────
+init().then(() => {
+  // Initial filter render with all confirmed rows
+  filteredRows = getAllRows().filter(r =>
+    r.status === "completed" || r.status === "pending offline payment" || r.status === "pre-registered"
+  );
+  applyFilters();
+});
+window.addEventListener("resize", () => {
+  if (campData) renderTrendChart();
+});
+</script>
+</body>
+</html>
