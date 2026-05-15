@@ -172,7 +172,7 @@ a{color:var(--green-dark)}
   <div class="config-banner" id="configBanner">
     <span class="icon">⚙️</span>
     <span><strong style="color:#A8D8A0">LIVE DATA:</strong> To connect Power Automate, set <code style="color:#FFD580">DATA_ENDPOINT</code> at the top of this file.&nbsp;
-    Currently showing: <span id="snapshotDate"></span> snapshot (Backfilled from TicketSpice CSV — May 7 2026).</span>
+    Currently showing: <span id="snapshotDate"></span> snapshot (<span id="snapshotNote"></span>).</span>
   </div>
 
   <!-- SUMMARY CARDS -->
@@ -318,6 +318,8 @@ async function init() {
   document.getElementById("snapshotDate").textContent = campData.generatedAt
     ? new Date(campData.generatedAt).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})
     : "unknown date";
+  const noteEl = document.getElementById("snapshotNote");
+  if (noteEl) noteEl.textContent = campData.dataNote || "";
 }
 
 async function loadData() {
