@@ -55,16 +55,16 @@ STATUS_MAP = {
 # After the first run prints the available paths, set these to the exact `path`
 # strings from your form, e.g. FIELD_PATHS["camperFirst"] = "camperName.firstName"
 FIELD_PATHS = {
-    "camperFirst": None,
-    "camperLast": None,
-    "dob": None,
+    "camperFirst": "camperFirstLastName.first",
+    "camperLast": "camperFirstLastName.last",
+    "dob": "dateOfBirth",
     # extended care is detected per-week from level labels, not a single field
 }
 
 # Set True to make the script print EVERY field path/label the live API returns,
 # then exit WITHOUT changing the dashboard. Use this to discover the real paths,
 # fill in FIELD_PATHS above, then set this back to False.
-DISCOVERY_MODE = True
+DISCOVERY_MODE = False
 
 # Heuristics used to auto-detect the custom fields if FIELD_PATHS not set.
 # "all" = every term must appear; "any" = at least one term must appear.
