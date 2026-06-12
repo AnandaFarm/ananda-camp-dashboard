@@ -61,6 +61,11 @@ FIELD_PATHS = {
     # extended care is detected per-week from level labels, not a single field
 }
 
+# Set True to make the script print EVERY field path/label the live API returns,
+# then exit WITHOUT changing the dashboard. Use this to discover the real paths,
+# fill in FIELD_PATHS above, then set this back to False.
+DISCOVERY_MODE = True
+
 # Heuristics used to auto-detect the custom fields if FIELD_PATHS not set.
 # "all" = every term must appear; "any" = at least one term must appear.
 DETECT_HINTS = {
@@ -147,6 +152,22 @@ def index_field_data(record):
 def resolve_field_paths(records):
     """If FIELD_PATHS not set, try to auto-detect them by scanning labels.
     Returns a resolved dict or None if detection failed."""
+    if DISCOVERY_MODE:
+        seen = {}
+        for rec in records:
+            for item in rec.get("fieldData", []):
+                p = item.get("path", "")
+                l = (item.get("label", "") or "").lower()
+                if p:
+                    seen[p] = l
+        print("=" * 60)
+        print("DISCOVERY MODE — all field paths returned by the live API:")
+        print("=" * 60)
+        for path, label in sorted(seen.items()):
+            print(f"  path={path!r}  label={label!r}")
+        print("=" * 60)
+        sys.exit("DISCOVERY_MODE is on — dashboard left unchanged. "
+                 "Fill in FIELD_PATHS, set DISCOVERY_MODE=False, re-run.")
     if all(FIELD_PATHS.get(k) for k in ("camperFirst", "camperLast", "dob")):
         return dict(FIELD_PATHS)
 
