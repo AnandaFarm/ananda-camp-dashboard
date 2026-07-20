@@ -108,6 +108,13 @@ def fetch_all_tickets():
                  "Set it as a GitHub Actions secret.")
     headers = {"apiKey": API_KEY}
     all_records = []
+    # DIAGNOSTIC: log full response envelope on first page to find pagination keys
+    _diag_resp = requests.get(API_BASE, headers=headers,
+                              params={"product": PRODUCT, "formId": FORM_ID, "limit": 250, "start": 0},
+                              timeout=30)
+    _diag = _diag_resp.json()
+    print("  API response keys:", sorted(k for k in _diag.keys() if k != "data"))
+    print("  Sample record keys:", sorted(_diag["data"][0].keys()) if _diag.get("data") else "no data")
     # The Webconnex API caps at 250 records per request regardless of limit.
     # The 'start' offset param is unreliable (may return duplicate windows).
     # Strategy: fetch using both 'start' offset AND 'page' number approaches,
