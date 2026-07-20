@@ -266,7 +266,11 @@ def build_snapshot(records, paths):
                 ec_rev[(oid, w)] += per
 
     # Pass 2 — camper rows
+    # seen_camper_week deduplicates when the API returns both a bundle-level
+    # record AND individual per-week records for the same registration.
+    # Key: (orderId, normalizedName_lower, week)
     rows = []
+    seen_camper_week = set()
     for rec in records:
         status = STATUS_MAP.get(str(rec.get("status", "")), str(rec.get("status", "")))
         if status == "canceled":
@@ -304,6 +308,10 @@ def build_snapshot(records, paths):
         m = SINGLE_WEEK_RE.match(lvl)
         if m:
             wk, dtp = int(m.group(1)), m.group(2)
+            dk = (oid, (cf + cl).lower(), wk)
+            if dk in seen_camper_week:
+                continue
+            seen_camper_week.add(dk)
             ecr = ec_rev.get((oid, wk), 0.0)
             rows.append({**base, "week": wk, "weekDates": WEEK_DATES[wk],
                          "dayType": dtp, "extendedCare": wk in ec_weeks.get(oid, set()),
@@ -314,6 +322,10 @@ def build_snapshot(records, paths):
             wks = list(wk_range)
             per = round(total / len(wks), 2)
             for wk in wks:
+                dk = (oid, (cf + cl).lower(), wk)
+                if dk in seen_camper_week:
+                    continue
+                seen_camper_week.add(dk)
                 ecr = ec_rev.get((oid, wk), 0.0)
                 rows.append({**base, "week": wk, "weekDates": WEEK_DATES[wk],
                              "dayType": dtp, "extendedCare": wk in ec_weeks.get(oid, set()),
@@ -323,19 +335,29 @@ def build_snapshot(records, paths):
         print(f"  WARNING: unrecognized level label, skipped: {lvl!r}")
 
     # ── Aggregates ──
-    active = [r for r in rows if r["status"] in ("completed", "pending offline payment")]
-    unique = len(set(r["normalizedName"] for r in active))
-    total_weeks = len(active)
-    total_rev = round(sum(r["ticketPrice"] for r in active), 2)
-    paid_rev = round(sum(r["ticketPrice"] for r in active if r["status"] == "completed"), 2)
-    pend_rev = round(sum(r["ticketPrice"] for r in active if r["status"] == "pending offline payment"), 2)
+    print(f"  Raw API records fetched: {len(records)}")
+    print(f"  Camper-week rows after dedup: {len(rows)}")
+    # Include pre-registered in unique-camper count (they have a real spot)
+    active = [r for r in rows if r["status"] in ("completed", "pending offline payment", "pre-registered")]
+    for_stats = [r for r in rows if r["status"] in ("completed", "pending offline payment")]
+    unique = len(set(r["normalizedName"] for r in active if r["normalizedName"]))
+    total_weeks = len(for_stats)
+    # Sanity guard — known-good ceiling: 9 weeks × 40 campers max = 360
+    if total_weeks > 360 or unique > 220:
+        import sys
+        print(f"SANITY GUARD TRIGGERED: {unique} unique campers, {total_weeks} camp-weeks — "
+              f"numbers implausibly high. Dashboard left unchanged.")
+        sys.exit(1)
+    total_rev = round(sum(r["ticketPrice"] for r in for_stats), 2)
+    paid_rev = round(sum(r["ticketPrice"] for r in for_stats if r["status"] == "completed"), 2)
+    pend_rev = round(sum(r["ticketPrice"] for r in for_stats if r["status"] == "pending offline payment"), 2)
 
     wk_map = {}
     for wk in range(1, 10):
         wk_map[wk] = dict(week=wk, weekDates=WEEK_DATES[wk], total=0, fullDay=0,
                           halfDay=0, extendedCare=0, revenue=0.0, age5_7=0,
                           age8_11=0, age12=0, ageUnder5=0, ageOver12=0, ageUnknown=0)
-    for r in active:
+    for r in for_stats:
         w = wk_map[r["week"]]
         w["total"] += 1
         if r["dayType"] == "Full Day":
