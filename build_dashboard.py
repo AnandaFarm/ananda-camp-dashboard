@@ -108,34 +108,40 @@ def fetch_all_tickets():
                  "Set it as a GitHub Actions secret.")
     headers = {"apiKey": API_KEY}
     all_records = []
-    start = 0
-    page = 1
-    while True:
-        params = {
-            "product": PRODUCT,
-            "formId": FORM_ID,
-            "limit": PAGE_SIZE,
-            "start": start,
-        }
-        resp = requests.get(API_BASE, headers=headers, params=params, timeout=30)
-        if resp.status_code != 200:
-            sys.exit(f"ERROR: API returned {resp.status_code}: {resp.text[:500]}")
-        payload = resp.json()
-        batch = payload.get("data", [])
-        total = payload.get("totalResults", 0)
-        print(f"  Page {page}: got {len(batch)} records (totalResults={total}, start={start})")
-        all_records.extend(batch)
-        if len(batch) == 0:
-            break
-        start += len(batch)
-        # Stop when we've fetched all records the API reports, or got a partial page
-        if start >= total or len(batch) < PAGE_SIZE:
-            break
-        page += 1
-        if page > 10:  # safety: 10 000 records max
-            print(f"WARNING: hit 10-page safety limit at {len(all_records)} records")
-            break
-    print(f"Fetched {len(all_records)} ticket records from API (totalResults={total}).")
+    # The Webconnex API caps at 250 records per request regardless of limit.
+    # The 'start' offset param is unreliable (may return duplicate windows).
+    # Strategy: fetch using both 'start' offset AND 'page' number approaches,
+    # then deduplicate by record ID so we capture all records across both windows.
+    seen_ids = set()
+    total_reported = 0
+    for pagination_style in ("start", "page"):
+        cursor = 0
+        for pg in range(1, 6):  # max 5 attempts per style = 1250 records/style
+            if pagination_style == "start":
+                params = {"product": PRODUCT, "formId": FORM_ID, "limit": PAGE_SIZE, "start": cursor}
+            else:
+                params = {"product": PRODUCT, "formId": FORM_ID, "limit": PAGE_SIZE, "page": pg}
+            resp = requests.get(API_BASE, headers=headers, params=params, timeout=30)
+            if resp.status_code != 200:
+                sys.exit(f"ERROR: API returned {resp.status_code}: {resp.text[:500]}")
+            payload = resp.json()
+            batch = payload.get("data", [])
+            total_reported = payload.get("totalResults", total_reported)
+            before = len(all_records)
+            for rec in batch:
+                rid = rec.get("id") or rec.get("orderId")
+                key = (rid, rec.get("levelLabel",""), rec.get("status",""))
+                if key not in seen_ids:
+                    seen_ids.add(key)
+                    all_records.append(rec)
+            new_added = len(all_records) - before
+            print(f"  {pagination_style} pg{pg}: got {len(batch)} records, {new_added} new (total unique={len(all_records)}, API totalResults={total_reported})")
+            if len(batch) == 0 or (new_added == 0 and pg > 1):
+                break  # no new records = pagination exhausted
+            cursor += len(batch)
+            if len(all_records) >= total_reported:
+                break  # got everything the API reported
+    print(f"Fetched {len(all_records)} unique ticket records from API (API reports {total_reported} total).")
     return all_records
 
 
