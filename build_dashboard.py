@@ -35,7 +35,7 @@ import requests
 API_BASE = "https://api.webconnex.com/v2/public/search/tickets"
 PRODUCT = "ticketspice.com"
 FORM_ID = "990538"            # Ananda Farm Summer Camp 2026 form
-PAGE_SIZE = 250               # API max per page
+PAGE_SIZE = 1000              # Webconnex allows up to 1000; fetch all in one page
 HTML_PATH = "index.html"      # file to update in the repo
 
 # The API key comes from the environment (GitHub Actions secret), never hardcoded.
@@ -122,19 +122,20 @@ def fetch_all_tickets():
             sys.exit(f"ERROR: API returned {resp.status_code}: {resp.text[:500]}")
         payload = resp.json()
         batch = payload.get("data", [])
-        total_reported = payload.get("totalResults", "?")
-        print(f"  Page {page}: got {len(batch)} records (API totalResults={total_reported})")
+        total = payload.get("totalResults", 0)
+        print(f"  Page {page}: got {len(batch)} records (totalResults={total}, start={start})")
         all_records.extend(batch)
-        if len(batch) < PAGE_SIZE:
-            # Received a partial page — no more records available
+        if len(batch) == 0:
             break
         start += len(batch)
-        page += 1
-        # Safety valve: stop after 20 pages (5 000 records) to avoid runaway loops
-        if page > 20:
-            print(f"WARNING: hit 20-page safety limit; {len(all_records)} records so far")
+        # Stop when we've fetched all records the API reports, or got a partial page
+        if start >= total or len(batch) < PAGE_SIZE:
             break
-    print(f"Fetched {len(all_records)} ticket records from API.")
+        page += 1
+        if page > 10:  # safety: 10 000 records max
+            print(f"WARNING: hit 10-page safety limit at {len(all_records)} records")
+            break
+    print(f"Fetched {len(all_records)} ticket records from API (totalResults={total}).")
     return all_records
 
 
