@@ -109,6 +109,7 @@ def fetch_all_tickets():
     headers = {"apiKey": API_KEY}
     all_records = []
     start = 0
+    page = 1
     while True:
         params = {
             "product": PRODUCT,
@@ -121,10 +122,17 @@ def fetch_all_tickets():
             sys.exit(f"ERROR: API returned {resp.status_code}: {resp.text[:500]}")
         payload = resp.json()
         batch = payload.get("data", [])
+        total_reported = payload.get("totalResults", "?")
+        print(f"  Page {page}: got {len(batch)} records (API totalResults={total_reported})")
         all_records.extend(batch)
-        total = payload.get("totalResults", len(all_records))
+        if len(batch) < PAGE_SIZE:
+            # Received a partial page — no more records available
+            break
         start += len(batch)
-        if len(batch) == 0 or start >= total:
+        page += 1
+        # Safety valve: stop after 20 pages (5 000 records) to avoid runaway loops
+        if page > 20:
+            print(f"WARNING: hit 20-page safety limit; {len(all_records)} records so far")
             break
     print(f"Fetched {len(all_records)} ticket records from API.")
     return all_records
