@@ -108,47 +108,32 @@ def fetch_all_tickets():
                  "Set it as a GitHub Actions secret.")
     headers = {"apiKey": API_KEY}
     all_records = []
-    # DIAGNOSTIC: log full response envelope on first page to find pagination keys
-    _diag_resp = requests.get(API_BASE, headers=headers,
-                              params={"product": PRODUCT, "formId": FORM_ID, "limit": 250, "start": 0},
-                              timeout=30)
-    _diag = _diag_resp.json()
-    print("  API response keys:", sorted(k for k in _diag.keys() if k != "data"))
-    print("  Sample record keys:", sorted(_diag["data"][0].keys()) if _diag.get("data") else "no data")
-    # The Webconnex API caps at 250 records per request regardless of limit.
-    # The 'start' offset param is unreliable (may return duplicate windows).
-    # Strategy: fetch using both 'start' offset AND 'page' number approaches,
-    # then deduplicate by record ID so we capture all records across both windows.
-    seen_ids = set()
+    # Cursor-based pagination using 'startingAfter' + 'hasMore' response fields.
+    # The 'start'/'page' offset params are ignored by this API endpoint.
+    page = 1
+    cursor = None  # None = first page, string = subsequent pages
     total_reported = 0
-    for pagination_style in ("start", "page"):
-        cursor = 0
-        for pg in range(1, 6):  # max 5 attempts per style = 1250 records/style
-            if pagination_style == "start":
-                params = {"product": PRODUCT, "formId": FORM_ID, "limit": PAGE_SIZE, "start": cursor}
-            else:
-                params = {"product": PRODUCT, "formId": FORM_ID, "limit": PAGE_SIZE, "page": pg}
-            resp = requests.get(API_BASE, headers=headers, params=params, timeout=30)
-            if resp.status_code != 200:
-                sys.exit(f"ERROR: API returned {resp.status_code}: {resp.text[:500]}")
-            payload = resp.json()
-            batch = payload.get("data", [])
-            total_reported = payload.get("totalResults", total_reported)
-            before = len(all_records)
-            for rec in batch:
-                rid = rec.get("id") or rec.get("orderId")
-                key = (rid, rec.get("levelLabel",""), rec.get("status",""))
-                if key not in seen_ids:
-                    seen_ids.add(key)
-                    all_records.append(rec)
-            new_added = len(all_records) - before
-            print(f"  {pagination_style} pg{pg}: got {len(batch)} records, {new_added} new (total unique={len(all_records)}, API totalResults={total_reported})")
-            if len(batch) == 0 or (new_added == 0 and pg > 1):
-                break  # no new records = pagination exhausted
-            cursor += len(batch)
-            if len(all_records) >= total_reported:
-                break  # got everything the API reported
-    print(f"Fetched {len(all_records)} unique ticket records from API (API reports {total_reported} total).")
+    while True:
+        params = {"product": PRODUCT, "formId": FORM_ID, "limit": PAGE_SIZE}
+        if cursor:
+            params["startingAfter"] = cursor
+        resp = requests.get(API_BASE, headers=headers, params=params, timeout=30)
+        if resp.status_code != 200:
+            sys.exit(f"ERROR: API returned {resp.status_code}: {resp.text[:500]}")
+        payload = resp.json()
+        batch = payload.get("data", [])
+        has_more = payload.get("hasMore", False)
+        cursor = payload.get("startingAfter")  # cursor for next page
+        total_reported = payload.get("totalResults", total_reported)
+        all_records.extend(batch)
+        print(f"  Page {page}: got {len(batch)} records (hasMore={has_more}, totalResults={total_reported})")
+        if not has_more or not batch or not cursor:
+            break
+        page += 1
+        if page > 20:
+            print(f"WARNING: safety limit reached at {len(all_records)} records")
+            break
+    print(f"Fetched {len(all_records)} ticket records from API (totalResults={total_reported}).")
     return all_records
 
 
